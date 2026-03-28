@@ -1,23 +1,30 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Noto_Serif } from "next/font/google";
+import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
   ArrowUpRight,
+  BarChart3,
+  BrainCircuit,
+  BriefcaseBusiness,
+  Building2,
   Download,
-  Mail,
+  Globe2,
+  GraduationCap,
+  Landmark,
+  Laptop2,
+  MapPin,
   MessageCircleMore,
+  ReceiptText,
+  Send,
+  ShieldCheck,
+  Users2,
 } from "lucide-react";
 
 import { fetchSitePayload } from "@/lib/api";
-import type { ArticlePreview, ExpertiseCategory } from "@/lib/types";
-import { absoluteUrl } from "@/lib/utils";
-
-import { ContactForm } from "@/components/forms/contact-form";
-import { SiteFooter } from "@/components/layout/site-footer";
-import { SiteNavbar } from "@/components/layout/site-navbar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import type { ArticlePreview, Experience, ExpertiseCategory, Project, SocialLink } from "@/lib/types";
+import { absoluteUrl, cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -30,70 +37,146 @@ export const metadata = {
   },
 };
 
-const articleDateFormatter = new Intl.DateTimeFormat("en-US", {
-  month: "long",
-  day: "numeric",
-  year: "numeric",
+const notoSerif = Noto_Serif({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
 });
 
-function formatArticleDate(dateString: string) {
-  return articleDateFormatter.format(new Date(dateString));
+const productVisuals: {
+  matcher: string;
+  icon: LucideIcon;
+  toneClass: string;
+}[] = [
+  { matcher: "ai", icon: BrainCircuit, toneClass: "bg-[#008080]" },
+  { matcher: "invoice", icon: ReceiptText, toneClass: "bg-slate-500" },
+  { matcher: "hyrax", icon: BriefcaseBusiness, toneClass: "bg-[#515f74]" },
+  { matcher: "patience", icon: Users2, toneClass: "bg-emerald-600" },
+];
+
+function getProductVisual(project: Project, index: number) {
+  const normalized = `${project.slug} ${project.name}`.toLowerCase();
+  const match = productVisuals.find((item) => normalized.includes(item.matcher));
+  if (match) {
+    return match;
+  }
+
+  const fallbackVisuals = [
+    { icon: Landmark, toneClass: "bg-indigo-600" },
+    { icon: Globe2, toneClass: "bg-amber-600" },
+  ];
+
+  return fallbackVisuals[index % fallbackVisuals.length];
 }
 
-function distributeIntoColumns<T>(items: T[], columnCount: number) {
-  const columns = Array.from({ length: columnCount }, () => [] as T[]);
-  items.forEach((item, index) => {
-    columns[index % columnCount].push(item);
-  });
-  return columns.filter((column) => column.length > 0);
+function getExperienceHighlights(experiences: Experience[]) {
+  const preferredTitles = [
+    "Programme Coordinator - Male Feminists Network",
+    "Programme Coordinator - BUILD Grant & Side by Side Movement",
+    "Programme & Information Technology Officer",
+    "Adjunct Instructor (Programming Fundamentals - Python)",
+  ];
+
+  const selected = preferredTitles
+    .map((title) => experiences.find((experience) => experience.title === title))
+    .filter((experience): experience is Experience => Boolean(experience));
+
+  return selected.length > 0 ? selected : experiences.slice(0, 4);
+}
+
+function getExperienceKicker(experience: Experience) {
+  const title = experience.title.toLowerCase();
+  if (title.includes("male feminists") || title.includes("build grant")) {
+    return "Programme Leadership & Delivery";
+  }
+  if (title.includes("technology") || title.includes("it")) {
+    return "Systems Architecture & Operations";
+  }
+  if (title.includes("adjunct")) {
+    return "Teaching & Capacity Building";
+  }
+  return experience.organization;
+}
+
+function getCompetencyHighlights(categories: ExpertiseCategory[]) {
+  const preferred = [
+    "Programme & Project Management",
+    "Monitoring, Evaluation & Learning",
+    "Digital Transformation & IT",
+    "Stakeholder, Donor & Partnership Management",
+  ];
+
+  const selected = preferred
+    .map((title) => categories.find((category) => category.title === title))
+    .filter((category): category is ExpertiseCategory => Boolean(category));
+
+  return selected.length > 0 ? selected : categories.slice(0, 4);
+}
+
+function getCompetencyIcon(title: string) {
+  const normalized = title.toLowerCase();
+  if (normalized.includes("programme")) {
+    return BriefcaseBusiness;
+  }
+  if (normalized.includes("monitoring") || normalized.includes("evaluation")) {
+    return BarChart3;
+  }
+  if (normalized.includes("digital") || normalized.includes("it")) {
+    return Laptop2;
+  }
+  return Users2;
+}
+
+function abbreviateIssuer(issuer: string) {
+  if (issuer.includes("PM4NGOs")) {
+    return "PM4NGOs";
+  }
+  if (issuer.includes("Project Management Institute") || issuer.includes("(PMI)")) {
+    return "PMI";
+  }
+  if (issuer.includes("CIPMN")) {
+    return "CIPMN";
+  }
+  if (issuer.includes("Strategic Management")) {
+    return "ISMN";
+  }
+  return issuer
+    .split(" ")
+    .map((part) => part.replace(/[^A-Za-z]/g, "").slice(0, 1).toUpperCase())
+    .join("")
+    .slice(0, 6);
+}
+
+function getThoughtLeadershipArticles(
+  featured: ArticlePreview | null,
+  recent: ArticlePreview[],
+) {
+  if (!featured) {
+    return recent.slice(0, 2);
+  }
+
+  return [featured, ...recent.filter((article) => article.slug !== featured.slug)].slice(0, 2);
 }
 
 function getArticleKicker(article: ArticlePreview) {
-  return article.categories[0]?.name || article.tags[0]?.name || "Article";
+  return article.categories[0]?.name || article.tags[0]?.name || "Thought Leadership";
 }
 
-function ExpertiseColumn({
-  categories,
-}: {
-  categories: ExpertiseCategory[];
-}) {
-  return (
-    <div className="space-y-10">
-      {categories.map((category) => (
-        <div key={category.title} className="space-y-4">
-          <div className="space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
-              {category.title}
-            </p>
-            <p className="text-sm leading-7 text-muted">{category.description}</p>
-          </div>
-          <ul className="space-y-3">
-            {category.skills.map((skill) => (
-              <li key={skill} className="flex items-start gap-3 text-sm leading-7 text-foreground">
-                <span className="mt-3 h-1.5 w-1.5 rounded-full bg-accent" />
-                <span>{skill}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
-  );
+function getFooterLinks(links: SocialLink[]) {
+  return links.filter((link) => link.visible_in_footer);
 }
 
 export default async function HomePage() {
   const data = await fetchSitePayload();
-  const { site_settings: settings, profile } = data;
+  const { profile, site_settings: settings } = data;
 
-  const featuredArticle = data.featured_article ?? data.recent_articles[0] ?? null;
-  const additionalArticles = data.recent_articles
-    .filter((article) => article.slug !== featuredArticle?.slug)
-    .slice(0, 3);
-  const expertiseColumns = distributeIntoColumns(data.expertise_categories, 3);
-  const aboutParagraphs =
-    profile.about_paragraphs.length > 0
-      ? profile.about_paragraphs.slice(0, 2)
-      : [profile.about_body];
+  const experienceHighlights = getExperienceHighlights(data.experiences);
+  const competencyHighlights = getCompetencyHighlights(data.expertise_categories);
+  const thoughtLeadershipArticles = getThoughtLeadershipArticles(
+    data.featured_article,
+    data.recent_articles,
+  );
+  const footerLinks = getFooterLinks(data.social_links);
 
   const personSchema = {
     "@context": "https://schema.org",
@@ -108,562 +191,596 @@ export default async function HomePage() {
       addressLocality: "Abuja",
       addressCountry: "Nigeria",
     },
-    sameAs: [settings.linkedin_url],
+    sameAs: footerLinks.map((link) => link.url).filter(Boolean),
     email: settings.public_email,
   };
 
   return (
     <>
-      <SiteNavbar siteName={settings.site_name} cvUrl={settings.cv_file_url} />
-      <main className="flex-1">
+      <nav className="fixed top-0 z-50 w-full bg-white/90 shadow-sm backdrop-blur-md transition-all duration-300">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-5 sm:px-8 sm:py-6">
+          <Link
+            href="/"
+            className={cn(notoSerif.className, "text-xl tracking-tight text-slate-900 sm:text-2xl")}
+          >
+            Vincent Dania
+          </Link>
+
+          <div className="hidden items-center space-x-8 md:flex">
+            <a className="font-medium text-slate-600 transition-colors hover:text-accent" href="#about">
+              About Vincent
+            </a>
+            <a className="font-medium text-slate-600 transition-colors hover:text-accent" href="#experience">
+              Experience
+            </a>
+            <a className="font-medium text-slate-600 transition-colors hover:text-accent" href="#tech">
+              Products
+            </a>
+            <a className="font-medium text-slate-600 transition-colors hover:text-accent" href="#articles">
+              Articles
+            </a>
+          </div>
+
+          <div className="flex items-center gap-3 sm:gap-4">
+            {settings.cv_file_url ? (
+              <a
+                className="hidden rounded-lg px-5 py-2.5 font-semibold text-accent transition-all duration-300 hover:bg-accent/5 sm:inline-flex"
+                href={settings.cv_file_url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Download CV
+              </a>
+            ) : null}
+            <a
+              className="inline-flex rounded-lg bg-accent px-4 py-2.5 font-semibold text-white transition-all duration-300 hover:bg-accent-strong sm:px-5"
+              href="#contact"
+            >
+              Contact Me
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <main className="bg-[#f9fafb] pt-24 text-slate-900">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
         />
 
-        <section className="section-space pb-14 pt-8">
-          <div className="shell grid gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-            <div className="fade-in space-y-8">
-              <Badge variant="muted">{profile.hero_eyebrow}</Badge>
-              <div className="space-y-6">
-                <h1 className="display-title max-w-4xl text-[clamp(3.4rem,8vw,7rem)] text-foreground">
-                  {profile.hero_title}
-                </h1>
-                <p className="max-w-xl text-base leading-8 text-muted sm:text-lg">
-                  {profile.hero_subtitle}
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                {settings.cv_file_url ? (
-                  <Button asChild size="lg">
-                    <a href={settings.cv_file_url} target="_blank" rel="noreferrer">
-                      <Download className="h-4 w-4" />
-                      Download CV
-                    </a>
-                  </Button>
-                ) : null}
-                <Button asChild size="lg" variant="secondary">
-                  <Link href="#contact">Contact Me</Link>
-                </Button>
-                <Button asChild size="lg" variant="outline">
-                  <Link href="/articles">
-                    Read Articles
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button asChild size="lg" variant="ghost">
-                  <a href={settings.whatsapp_url} target="_blank" rel="noreferrer">
-                    <MessageCircleMore className="h-4 w-4" />
-                    WhatsApp Me
-                  </a>
-                </Button>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                {data.credibility_stats.slice(0, 4).map((stat) => (
-                  <div
-                    key={stat.label}
-                    className="rounded-[1.35rem] border border-border/60 bg-white/75 px-5 py-4 text-sm leading-6 text-muted shadow-[0_10px_24px_rgba(42,42,42,0.04)]"
-                  >
-                    {stat.label}
-                  </div>
-                ))}
-              </div>
+        <section className="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-12 lg:items-center lg:py-28 sm:px-8">
+          <div className="space-y-8 lg:col-span-7">
+            <div className="inline-flex items-center space-x-2 rounded-full bg-teal-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-[#0f766e]">
+              <span className="h-2 w-2 rounded-full bg-accent" />
+              <span>Global Impact & Systems Design</span>
             </div>
 
-            <div className="relative mx-auto w-full max-w-[38rem]">
-              <div className="editorial-grid absolute inset-6 hidden rounded-[1.75rem] border border-border/60 lg:block" />
-              <div className="editorial-panel relative ml-auto overflow-hidden rounded-[1.75rem] p-4 sm:p-5">
-                <div className="relative aspect-[4/5] overflow-hidden rounded-[1.35rem] bg-surface-strong">
-                  {settings.portrait_image_url ? (
-                    <Image
-                      src={settings.portrait_image_url}
-                      alt="Portrait of Vincent Dania"
-                      fill
-                      className="object-cover"
-                      sizes="(min-width: 1024px) 34rem, 100vw"
-                      unoptimized
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center bg-accent-soft">
-                      <p className="font-display text-4xl text-foreground">Vincent Dania</p>
-                    </div>
-                  )}
+            <h1
+              className={cn(
+                notoSerif.className,
+                "max-w-4xl text-[2.85rem] leading-[0.95] text-slate-900 sm:text-5xl lg:text-7xl",
+              )}
+            >
+              {profile.hero_title}
+            </h1>
+
+            <p className="max-w-xl text-lg leading-relaxed text-slate-500 sm:text-xl">
+              {profile.hero_subtitle}
+            </p>
+
+            <div className="flex flex-wrap gap-4 pt-2">
+              <a
+                className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-4 font-bold text-white transition-all hover:bg-accent-strong sm:px-8"
+                href="#contact"
+              >
+                Work with Vincent
+                <ArrowRight className="h-4 w-4" />
+              </a>
+              <a
+                className="inline-flex rounded-lg border border-slate-200 bg-white px-6 py-4 font-bold text-slate-900 transition-all hover:bg-slate-100 sm:px-8"
+                href="#tech"
+              >
+                View Portfolio
+              </a>
+            </div>
+          </div>
+
+          <div className="group relative lg:col-span-5">
+            <div className="absolute -inset-4 rounded-2xl bg-accent/5 transition-transform group-hover:rotate-0 group-hover:scale-[1.01] lg:rotate-3" />
+            <div className="relative aspect-[4/5] overflow-hidden rounded-xl shadow-2xl">
+              {settings.portrait_image_url ? (
+                <Image
+                  src={settings.portrait_image_url}
+                  alt="Vincent Dania professional portrait"
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 1024px) 32rem, 100vw"
+                  unoptimized
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center bg-slate-200">
+                  <p className={cn(notoSerif.className, "text-4xl text-slate-700")}>
+                    Vincent Dania
+                  </p>
                 </div>
+              )}
+            </div>
+
+            <div className="absolute -bottom-6 left-0 hidden rounded-lg bg-white p-5 shadow-xl md:block lg:-left-6">
+              <div className={cn(notoSerif.className, "text-4xl font-bold text-accent")}>14+</div>
+              <div className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-slate-500">
+                Years Experience
               </div>
-
-              <Card className="absolute -bottom-8 left-0 w-[13.5rem] bg-white/96">
-                <CardContent className="space-y-2 p-5">
-                  <p className="font-display text-5xl leading-none text-foreground">14+</p>
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">
-                    Years leading delivery
-                  </p>
-                  <p className="text-sm leading-6 text-muted">
-                    Programme leadership across social impact, governance, and digital delivery.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="absolute right-0 top-8 hidden w-[15rem] bg-white/90 lg:block">
-                <CardContent className="space-y-3 p-5">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-muted">
-                    Current focus
-                  </p>
-                  <p className="font-display text-2xl leading-tight text-foreground">
-                    Open to remote, onsite, consulting, and advisory roles.
-                  </p>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </section>
 
-        <section className="pb-20">
-          <div className="shell grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
-            <div className="max-w-xl space-y-5">
-              <p className="eyebrow">About Vincent</p>
-              <h2 className="font-display text-[clamp(2.5rem,5vw,4.6rem)] leading-[0.98] text-foreground">
-                A synthesis of strategic leadership and technical precision.
-              </h2>
+        <section id="about" className="bg-white px-5 py-24 sm:px-8">
+          <div className="mx-auto max-w-7xl">
+            <div className="grid items-start gap-16 lg:grid-cols-2">
+              <div className="space-y-6">
+                <h2 className={cn(notoSerif.className, "text-4xl text-slate-900")}>
+                  A Synthesis of Strategic Leadership and Technical Precision.
+                </h2>
+                <div className="h-1 w-24 bg-accent" />
+              </div>
+
+              <div className="space-y-8 text-lg leading-relaxed text-slate-500">
+                <p>
+                  With over <span className="font-bold text-accent">14 years of professional trajectory</span>, I
+                  have dedicated my career to the intersection of digital transformation and
+                  international development. My work bridges the gap between complex donor
+                  mandates and ground-level execution.
+                </p>
+                <p>
+                  I specialize in <span className="font-bold text-accent">IT-enabled systems thinking</span>,
+                  leveraging data and scalable platforms to maximize program efficiency. From
+                  managing multi-million dollar donor portfolios to building custom enterprise
+                  tools, my approach is defined by intentionality, governance, and measurable
+                  outcomes.
+                </p>
+              </div>
             </div>
 
-            <div className="space-y-5 text-base leading-8 text-muted sm:text-lg">
-              {aboutParagraphs.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
+            <div className="mt-20 grid gap-8 md:grid-cols-3">
+              {[
+                {
+                  icon: Building2,
+                  value: "$2M+",
+                  label: "Donor-Funded Portfolios",
+                  borderClass: "border-accent",
+                },
+                {
+                  icon: GraduationCap,
+                  value: "8,000+",
+                  label: "Learners Managed (LMS)",
+                  borderClass: "border-accent/60",
+                },
+                {
+                  icon: ShieldCheck,
+                  value: "5,000+",
+                  label: "Successful Completions",
+                  borderClass: "border-accent/30",
+                },
+              ].map((metric) => {
+                const Icon = metric.icon;
+                return (
+                  <div
+                    key={metric.label}
+                    className={cn(
+                      "flex flex-col justify-between rounded-xl border-b-4 bg-[#f9fafb] p-8 transition-transform hover:-translate-y-1",
+                      metric.borderClass,
+                    )}
+                  >
+                    <Icon className="mb-4 h-10 w-10 text-accent" />
+                    <div>
+                      <div className={cn(notoSerif.className, "mb-1 text-3xl font-bold text-slate-900")}>
+                        {metric.value}
+                      </div>
+                      <p className="text-sm font-medium uppercase tracking-[0.16em] text-slate-500">
+                        {metric.label}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
+        </section>
 
-          <div className="shell mt-14 grid gap-4 md:grid-cols-3">
-            {data.impact_metrics.slice(0, 3).map((metric) => (
-              <Card key={metric.label} className="bg-white/82">
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <p className="font-display text-4xl leading-none text-foreground">
-                      {metric.value}
-                    </p>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
-                      {metric.label}
-                    </p>
-                  </div>
-                  <p className="text-sm leading-7 text-muted">{metric.detail}</p>
-                </CardContent>
-              </Card>
+        <section id="experience" className="mx-auto max-w-7xl px-5 py-24 sm:px-8">
+          <div className="mb-16 text-center">
+            <h2 className={cn(notoSerif.className, "mb-4 text-4xl text-slate-900")}>
+              Professional Trajectory
+            </h2>
+            <p className="text-sm font-bold uppercase tracking-[0.22em] text-accent">
+              Strategic Career Milestones
+            </p>
+          </div>
+
+          <div className="space-y-12">
+            {experienceHighlights.map((experience, index) => (
+              <div
+                key={`${experience.title}-${experience.organization}`}
+                className="group grid items-start gap-8 pb-12 md:grid-cols-12"
+              >
+                <div className="md:col-span-3">
+                  <span className={cn(index === 0 ? "font-bold text-accent" : "font-medium text-slate-500", "text-lg")}>
+                    {experience.period_label}
+                  </span>
+                  {index === 0 ? (
+                    <div className="mt-2 text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+                      Current Mandate
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className="rounded-xl bg-[#f3f4f6] p-8 transition-colors group-hover:bg-accent/5 md:col-span-9">
+                  <h3 className={cn(notoSerif.className, "mb-2 text-2xl text-slate-900")}>
+                    {experience.title}
+                  </h3>
+                  <p className="mb-4 font-semibold italic text-accent">
+                    {getExperienceKicker(experience)}
+                  </p>
+                  <ul className="space-y-3 leading-relaxed text-slate-500">
+                    <li className="flex gap-3">
+                      <span className="text-accent">/</span>
+                      <span>{experience.summary}</span>
+                    </li>
+                    {experience.achievements.slice(0, 2).map((achievement) => (
+                      <li key={achievement} className="flex gap-3">
+                        <span className="text-accent">/</span>
+                        <span>{achievement}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             ))}
           </div>
         </section>
 
-        <section className="surface-shift section-space">
-          <div className="shell space-y-10">
-            <div className="max-w-3xl space-y-5">
-              <p className="eyebrow">Professional Trajectory</p>
-              <h2 className="font-display text-[clamp(2.45rem,5vw,4.2rem)] leading-[1.02] text-foreground">
-                A career built on delivery discipline, institutional trust, and measurable execution.
-              </h2>
-            </div>
-
-            <div className="space-y-4">
-              {data.experiences.map((experience) => (
-                <article
-                  key={`${experience.title}-${experience.organization}`}
-                  className="rounded-[1.5rem] border border-border/70 bg-white/88 px-6 py-6 shadow-[0_14px_30px_rgba(42,42,42,0.04)] sm:px-8 sm:py-8 lg:grid lg:grid-cols-[180px_1fr_1.1fr] lg:gap-8"
-                >
-                  <div className="space-y-3 border-border/60 pb-5 text-sm text-muted lg:border-r lg:pb-0 lg:pr-8">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em]">
-                      {experience.period_label}
-                    </p>
-                    <p>{experience.location}</p>
-                    <p>{experience.employment_type}</p>
-                  </div>
-
-                  <div className="space-y-3 pt-5 lg:pt-0">
-                    <h3 className="font-display text-[1.9rem] leading-tight text-foreground">
-                      {experience.title}
-                    </h3>
-                    <p className="text-sm uppercase tracking-[0.12em] text-muted">
-                      {experience.organization}
-                    </p>
-                  </div>
-
-                  <div className="space-y-4 pt-5 lg:pt-0">
-                    <p className="text-sm leading-7 text-muted">{experience.summary}</p>
-                    <ul className="space-y-3">
-                      {experience.achievements.slice(0, 3).map((achievement) => (
-                        <li
-                          key={achievement}
-                          className="flex items-start gap-3 text-sm leading-7 text-foreground"
-                        >
-                          <span className="mt-3 h-1.5 w-1.5 rounded-full bg-accent" />
-                          <span>{achievement}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="section-space">
-          <div className="shell accent-panel grain overflow-hidden rounded-[2rem] px-6 py-10 sm:px-10 lg:px-12 lg:py-14">
-            <div className="max-w-3xl space-y-5">
-              <p className="eyebrow text-white/65">The Builder&apos;s Portfolio</p>
-              <h2 className="font-display text-[clamp(2.5rem,5vw,4.4rem)] leading-[1.02] text-white">
-                {profile.builder_title}
-              </h2>
-              <p className="max-w-2xl text-base leading-8 text-white/72 sm:text-lg">
-                {profile.builder_intro}
-              </p>
-            </div>
-
-            <div className="mt-12 grid gap-4 lg:grid-cols-2">
-              {data.projects.map((project) => (
-                <article
-                  key={project.slug}
-                  className="rounded-[1.45rem] border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-colors hover:bg-white/[0.08]"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <Badge className="bg-white/8 text-white" variant="secondary">
-                      {project.category_label}
-                    </Badge>
-                    {project.live_url ? (
-                      <a
-                        href={project.live_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-2 text-sm text-white/80 transition-colors hover:text-white"
-                      >
-                        Live site
-                        <ArrowUpRight className="h-4 w-4" />
-                      </a>
-                    ) : null}
-                  </div>
-
-                  <div className="mt-8 space-y-4">
-                    <div className="space-y-3">
-                      <h3 className="font-display text-3xl leading-tight text-white">
-                        {project.name}
-                      </h3>
-                      <p className="text-sm leading-7 text-white/70">
-                        {project.short_description}
-                      </p>
-                    </div>
-
-                    <p className="text-sm leading-7 text-white/75">{project.long_description}</p>
-
-                    <div className="space-y-4 pt-2">
-                      <div className="rounded-[1rem] border border-white/10 bg-black/10 px-4 py-3 text-sm text-white/72">
-                        {project.role_label}
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {project.tech_stack.map((item) => (
-                          <span
-                            key={item}
-                            className="rounded-md border border-white/10 px-3 py-1 text-xs uppercase tracking-[0.14em] text-white/62"
-                          >
-                            {item}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="section-space">
-          <div className="shell grid gap-10 xl:grid-cols-[1fr_1fr_1fr_0.92fr]">
-            <div className="space-y-6 xl:col-span-3">
-              <div className="max-w-3xl space-y-5">
-                <p className="eyebrow">Core Competencies</p>
-                <h2 className="font-display text-[clamp(2.45rem,5vw,4.2rem)] leading-[1.02] text-foreground">
-                  {profile.expertise_title}
+        <section id="tech" className="relative overflow-hidden bg-slate-900 px-5 py-24 sm:px-8">
+          <div className="absolute right-0 top-0 h-full w-1/3 translate-x-32 skew-x-12 bg-accent/10" />
+          <div className="relative z-10 mx-auto max-w-7xl">
+            <div className="mb-16 flex flex-col justify-between gap-8 md:flex-row md:items-end">
+              <div>
+                <h2 className={cn(notoSerif.className, "mb-4 text-4xl text-white")}>
+                  The &quot;Builder&quot; Portfolio
                 </h2>
-                <p className="max-w-2xl text-base leading-8 text-muted sm:text-lg">
-                  {profile.expertise_intro}
+                <p className="max-w-xl text-slate-400">
+                  Strategic IT products designed and deployed to solve complex organizational and
+                  educational challenges. From AI literacy to business automation.
                 </p>
               </div>
+              <a
+                className="inline-flex items-center gap-2 font-bold text-accent hover:underline"
+                href="#tech-grid"
+              >
+                View Technical Stack
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
+            </div>
 
-              <div className="grid gap-8 md:grid-cols-3">
-                {expertiseColumns.map((column, index) => (
-                  <ExpertiseColumn key={index} categories={column} />
+            <div id="tech-grid" className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {data.projects.map((project, index) => {
+                const visual = getProductVisual(project, index);
+                const Icon = visual.icon;
+                return (
+                  <article
+                    key={project.slug}
+                    className="group rounded-xl border border-white/10 bg-white/5 p-8 backdrop-blur-md transition-all hover:border-accent/50"
+                  >
+                    <div
+                      className={cn(
+                        "mb-6 flex h-12 w-12 items-center justify-center rounded-lg transition-transform group-hover:scale-110",
+                        visual.toneClass,
+                      )}
+                    >
+                      <Icon className="h-6 w-6 text-white" />
+                    </div>
+                    <h3 className={cn(notoSerif.className, "mb-2 text-xl text-white")}>
+                      {project.name}
+                    </h3>
+                    <p className="mb-6 text-sm leading-relaxed text-slate-400">
+                      {project.short_description}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {[project.category_label, project.tech_stack[0]].filter(Boolean).map((item) => (
+                        <span
+                          key={`${project.slug}-${item}`}
+                          className="rounded bg-white/10 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto grid max-w-7xl gap-16 px-5 py-24 lg:grid-cols-12 sm:px-8">
+          <div className="space-y-4 lg:col-span-4">
+            <h2 className={cn(notoSerif.className, "text-4xl text-slate-900")}>Core Competencies</h2>
+            <p className="leading-relaxed text-slate-500">
+              A multidimensional skill set honed through high-stakes project delivery, academic
+              rigor, and hands-on technology building.
+            </p>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-2 lg:col-span-8">
+            {competencyHighlights.map((category) => {
+              const Icon = getCompetencyIcon(category.title);
+              return (
+                <div key={category.title} className="space-y-4">
+                  <h4 className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.2em] text-accent">
+                    <Icon className="h-4 w-4" />
+                    {category.title}
+                  </h4>
+                  <div className="flex flex-wrap gap-2">
+                    {category.skills.slice(0, 3).map((skill) => (
+                      <span
+                        key={skill}
+                        className="rounded-full bg-[#f3f4f6] px-3 py-1 text-xs font-semibold text-slate-900"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="bg-[#f3f4f6] px-5 py-24 sm:px-8">
+          <div className="mx-auto flex max-w-7xl flex-col gap-16 md:flex-row">
+            <div className="flex-1 space-y-8">
+              <h3 className={cn(notoSerif.className, "border-l-4 border-accent pl-6 text-2xl text-slate-900")}>
+                Academic Excellence
+              </h3>
+              <div className="space-y-8">
+                {data.education.slice(0, 3).map((credential) => (
+                  <div key={credential.title}>
+                    <p className="font-bold text-slate-900">{credential.title}</p>
+                    <p className="text-sm text-slate-500">
+                      {credential.institution}
+                      {credential.location ? `, ${credential.location}` : ""}
+                      {credential.note ? (
+                        <>
+                          {" – "}
+                          <span className="italic">{credential.note}</span>
+                        </>
+                      ) : null}
+                    </p>
+                  </div>
                 ))}
               </div>
             </div>
 
-            <div className="space-y-5">
-              <Card className="bg-surface">
-                <CardContent className="space-y-5">
-                  <div className="space-y-3">
-                    <p className="eyebrow">Academic Excellence</p>
-                    <h3 className="font-display text-3xl leading-tight text-foreground">
-                      Advanced study across technology, management, and social protection.
-                    </h3>
+            <div className="flex-1 space-y-8">
+              <h3
+                className={cn(
+                  notoSerif.className,
+                  "border-l-4 border-accent/50 pl-6 text-2xl text-slate-900",
+                )}
+              >
+                Global Certifications
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                {data.certifications.slice(0, 4).map((certification) => (
+                  <div
+                    key={certification.title}
+                    className="rounded-lg border-t-2 border-accent bg-white p-4 shadow-sm"
+                  >
+                    <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+                      {abbreviateIssuer(certification.issuer)}
+                    </p>
+                    <p className="text-sm font-bold text-slate-900">{certification.title}</p>
                   </div>
-
-                  <div className="space-y-4">
-                    {data.education.map((credential) => (
-                      <div key={credential.title} className="space-y-2">
-                        <p className="text-sm font-semibold uppercase tracking-[0.12em] text-muted">
-                          {credential.period_label}
-                        </p>
-                        <p className="font-medium text-foreground">{credential.title}</p>
-                        <p className="text-sm leading-6 text-muted">
-                          {credential.institution}
-                          {credential.note ? ` • ${credential.note}` : ""}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="space-y-5">
-                  <div className="space-y-3">
-                    <p className="eyebrow">Certifications & Credentials</p>
-                    <h3 className="font-display text-3xl leading-tight text-foreground">
-                      Practice-led credentials aligned with complex programme delivery.
-                    </h3>
-                  </div>
-
-                  <div className="space-y-4">
-                    {data.certifications.map((certification) => (
-                      <div key={certification.title} className="space-y-1">
-                        <p className="font-medium text-foreground">{certification.title}</p>
-                        <p className="text-sm leading-6 text-muted">{certification.issuer}</p>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
-        {featuredArticle ? (
-          <section className="surface-shift section-space">
-            <div className="shell space-y-10">
-              <div className="max-w-3xl space-y-5">
-                <p className="eyebrow">Thought Leadership</p>
-                <h2 className="font-display text-[clamp(2.45rem,5vw,4.2rem)] leading-[1.02] text-foreground">
-                  {profile.thought_leadership_title}
-                </h2>
-                <p className="max-w-2xl text-base leading-8 text-muted sm:text-lg">
-                  {profile.thought_leadership_intro}
-                </p>
-              </div>
+        <section id="articles" className="mx-auto max-w-7xl px-5 py-24 sm:px-8">
+          <div className="mb-12 flex items-end justify-between gap-8">
+            <div>
+              <h2 className={cn(notoSerif.className, "mb-2 text-4xl text-slate-900")}>
+                Thought Leadership
+              </h2>
+              <p className="text-slate-500">Selected writings on policy and program management.</p>
+            </div>
+            <Link
+              href="/articles"
+              className="group inline-flex items-center gap-1 font-bold text-accent"
+            >
+              Full Archive
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
 
-              <div className="grid gap-6 xl:grid-cols-[1.12fr_0.88fr]">
-                <article className="overflow-hidden rounded-[1.6rem] border border-border/70 bg-white shadow-[0_16px_36px_rgba(42,42,42,0.05)]">
-                  <div className="grid lg:grid-cols-[0.88fr_1.12fr]">
-                    <div className="relative min-h-[18rem] bg-surface-strong">
-                      {featuredArticle.cover_image_url ? (
-                        <Image
-                          src={featuredArticle.cover_image_url}
-                          alt={featuredArticle.title}
-                          fill
-                          className="object-cover"
-                          sizes="(min-width: 1280px) 34rem, 100vw"
-                          unoptimized
-                        />
-                      ) : (
-                        <div className="editorial-grid flex h-full items-end bg-[linear-gradient(180deg,rgba(237,229,215,0.7),rgba(218,210,196,0.95))] p-8">
-                          <p className="font-display text-4xl leading-tight text-foreground">
-                            Clear thinking on policy, governance, and delivery.
-                          </p>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="space-y-6 p-8">
-                      <Badge variant="muted">{getArticleKicker(featuredArticle)}</Badge>
-                      <div className="space-y-4">
-                        <h3 className="font-display text-[2.2rem] leading-tight text-foreground">
-                          {featuredArticle.title}
-                        </h3>
-                        <p className="text-sm leading-7 text-muted">
-                          {featuredArticle.summary}
+          <div className="grid gap-8 md:grid-cols-2">
+            {thoughtLeadershipArticles.map((article, index) => (
+              <Link key={article.slug} href={`/articles/${article.slug}`} className="group block">
+                <article>
+                  <div className="relative mb-6 aspect-video overflow-hidden rounded-xl bg-slate-200">
+                    {article.cover_image_url ? (
+                      <Image
+                        src={article.cover_image_url}
+                        alt={article.title}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        sizes="(min-width: 768px) 50vw, 100vw"
+                        unoptimized
+                      />
+                    ) : (
+                      <div
+                        className={cn(
+                          "flex h-full items-end p-6 transition-transform duration-700 group-hover:scale-105",
+                          index === 0
+                            ? "bg-[linear-gradient(135deg,#dbeafe,#f3f4f6)]"
+                            : "bg-[linear-gradient(135deg,#e0f2fe,#ecfeff)]",
+                        )}
+                      >
+                        <p className={cn(notoSerif.className, "max-w-xs text-2xl leading-tight text-slate-900")}>
+                          {getArticleKicker(article)}
                         </p>
                       </div>
-                      <div className="flex flex-wrap gap-4 text-xs font-medium uppercase tracking-[0.14em] text-muted">
-                        <span>{formatArticleDate(featuredArticle.published_at)}</span>
-                        <span>{featuredArticle.reading_time_minutes} min read</span>
-                      </div>
-                      <Button asChild>
-                        <Link href={`/articles/${featuredArticle.slug}`}>
-                          Read featured article
-                          <ArrowRight className="h-4 w-4" />
-                        </Link>
-                      </Button>
-                    </div>
+                    )}
+                    <div className="absolute inset-0 bg-accent/20 opacity-0 transition-opacity group-hover:opacity-100" />
                   </div>
+                  <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-accent">
+                    {getArticleKicker(article)}
+                  </span>
+                  <h3
+                    className={cn(
+                      notoSerif.className,
+                      "mb-3 text-2xl text-slate-900 transition-colors group-hover:text-accent",
+                    )}
+                  >
+                    {article.title}
+                  </h3>
+                  <p className="text-sm text-slate-500">
+                    {article.summary}
+                  </p>
                 </article>
+              </Link>
+            ))}
+          </div>
+        </section>
 
-                <div className="grid gap-4">
-                  {additionalArticles.map((article) => (
-                    <article
-                      key={article.slug}
-                      className="overflow-hidden rounded-[1.45rem] border border-border/70 bg-white shadow-[0_14px_30px_rgba(42,42,42,0.04)]"
-                    >
-                      <div className="grid sm:grid-cols-[170px_1fr]">
-                        <div className="relative min-h-[11rem] bg-surface-strong">
-                          {article.cover_image_url ? (
-                            <Image
-                              src={article.cover_image_url}
-                              alt={article.title}
-                              fill
-                              className="object-cover"
-                              sizes="170px"
-                              unoptimized
-                            />
-                          ) : (
-                            <div className="editorial-grid flex h-full items-end bg-[linear-gradient(180deg,rgba(220,239,238,0.4),rgba(237,229,215,0.85))] p-5">
-                              <p className="font-display text-2xl leading-tight text-foreground">
-                                {getArticleKicker(article)}
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                        <div className="space-y-4 p-6">
-                          <div className="space-y-3">
-                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
-                              {getArticleKicker(article)}
-                            </p>
-                            <h3 className="font-display text-[1.75rem] leading-tight text-foreground">
-                              {article.title}
-                            </h3>
-                            <p className="text-sm leading-7 text-muted">{article.summary}</p>
-                          </div>
-                          <div className="flex items-center justify-between gap-4 text-sm text-muted">
-                            <span>{formatArticleDate(article.published_at)}</span>
-                            <Link
-                              href={`/articles/${article.slug}`}
-                              className="inline-flex items-center gap-2 text-foreground transition-colors hover:text-accent"
-                            >
-                              Read article
-                              <ArrowRight className="h-4 w-4" />
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    </article>
-                  ))}
+        <section className="bg-slate-900 px-5 py-20 text-center text-white sm:px-8">
+          <div className="mx-auto max-w-3xl space-y-8">
+            <div className="flex justify-center">
+              <span className="rounded-full border border-accent px-4 py-1 text-xs font-bold uppercase tracking-[0.22em] text-accent">
+                Global Availability
+              </span>
+            </div>
+            <h2 className={cn(notoSerif.className, "text-4xl")}>Open to High-Impact Opportunities.</h2>
+            <div className="flex flex-wrap justify-center gap-8">
+              <div className="flex items-center gap-2">
+                <Globe2 className="h-5 w-5 text-accent" />
+                <span className="font-medium text-slate-300">Remote</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-accent" />
+                <span className="font-medium text-slate-300">Onsite</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <BriefcaseBusiness className="h-5 w-5 text-accent" />
+                <span className="font-medium text-slate-300">Advisory & Consulting</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" className="mx-auto max-w-7xl px-5 py-24 sm:px-8">
+          <div className="relative overflow-hidden rounded-2xl bg-white p-10 shadow-xl sm:p-12 lg:p-20">
+            <div className="absolute right-0 top-0 hidden p-12 text-accent/5 lg:block">
+              <Send className="h-64 w-64 stroke-1" />
+            </div>
+
+            <div className="relative z-10 grid gap-16 lg:grid-cols-2 lg:items-center">
+              <div className="space-y-8">
+                <h2 className={cn(notoSerif.className, "text-4xl text-slate-900 sm:text-5xl")}>
+                  Initiate a Conversation.
+                </h2>
+                <p className="max-w-md text-xl leading-relaxed text-slate-500">
+                  Whether you&apos;re looking for program leadership, technical advisory, or a
+                  keynote speaker, I&apos;m ready to discuss how I can contribute.
+                </p>
+                <div className="space-y-4">
+                  <a className="block text-2xl font-semibold text-accent hover:underline" href={`mailto:${settings.public_email}`}>
+                    {settings.public_email}
+                  </a>
+                  <p className="font-medium tracking-wide text-slate-500">
+                    WhatsApp: +234 803 421 0082
+                  </p>
                 </div>
               </div>
 
-              <Button asChild variant="secondary">
-                <Link href="/articles">View all articles</Link>
-              </Button>
-            </div>
-          </section>
-        ) : null}
-
-        <section className="section-space pb-0">
-          <div className="shell accent-panel overflow-hidden rounded-[1.8rem] px-6 py-10 sm:px-10">
-            <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-              <div className="space-y-5">
-                <p className="eyebrow text-white/65">Open to opportunities</p>
-                <h2 className="font-display text-[clamp(2.2rem,4vw,3.8rem)] leading-[1.04] text-white">
-                  Open to high-impact opportunities.
-                </h2>
-                <p className="max-w-xl text-base leading-8 text-white/72 sm:text-lg">
-                  {profile.opportunities_copy}
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                {data.opportunities.map((opportunity) => (
-                  <span
-                    key={opportunity.title}
-                    className="rounded-lg border border-white/12 bg-white/6 px-4 py-3 text-sm text-white/82"
-                  >
-                    {opportunity.title}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="contact" className="section-space">
-          <div className="shell grid gap-10 lg:grid-cols-[0.92fr_1.08fr]">
-            <div className="space-y-7">
-              <div className="space-y-5">
-                <p className="eyebrow">Contact</p>
-                <h2 className="font-display text-[clamp(2.55rem,5vw,4.6rem)] leading-[1.02] text-foreground">
-                  Initiate a conversation.
-                </h2>
-                <p className="max-w-xl text-base leading-8 text-muted sm:text-lg">
-                  {profile.contact_copy}
-                </p>
-              </div>
-
-              <div className="grid gap-3">
+              <div className="flex flex-col gap-4">
                 <a
+                  className="flex w-full items-center justify-center gap-3 rounded-lg bg-accent py-5 text-center text-lg font-bold text-white shadow-lg shadow-accent/20 transition-all hover:bg-accent-strong"
                   href={`mailto:${settings.public_email}`}
-                  className="flex items-center justify-between gap-4 rounded-[1.3rem] border border-border/70 bg-white px-5 py-4 transition-colors hover:bg-surface"
                 >
-                  <span className="flex items-center gap-3">
-                    <Mail className="h-4 w-4 text-accent" />
-                    <span className="text-sm font-medium text-foreground">
-                      Email Vincent
-                    </span>
-                  </span>
-                  <span className="text-sm text-muted">{settings.public_email}</span>
+                  <Send className="h-5 w-5" />
+                  Send Email
                 </a>
-
                 <a
+                  className="flex w-full items-center justify-center gap-3 rounded-lg bg-slate-900 py-5 text-center text-lg font-bold text-white shadow-lg transition-all hover:bg-black"
                   href={settings.whatsapp_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center justify-between gap-4 rounded-[1.3rem] border border-border/70 bg-white px-5 py-4 transition-colors hover:bg-surface"
                 >
-                  <span className="flex items-center gap-3">
-                    <MessageCircleMore className="h-4 w-4 text-accent" />
-                    <span className="text-sm font-medium text-foreground">
-                      WhatsApp Vincent
-                    </span>
-                  </span>
-                  <span className="text-sm text-muted">Quick response channel</span>
+                  <MessageCircleMore className="h-5 w-5" />
+                  Chat on WhatsApp
                 </a>
-
                 {settings.cv_file_url ? (
                   <a
+                    className="flex w-full items-center justify-center gap-3 rounded-lg bg-[#f3f4f6] py-5 text-center text-lg font-bold text-slate-900 transition-all hover:bg-slate-200"
                     href={settings.cv_file_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center justify-between gap-4 rounded-[1.3rem] border border-border/70 bg-white px-5 py-4 transition-colors hover:bg-surface"
                   >
-                    <span className="flex items-center gap-3">
-                      <Download className="h-4 w-4 text-accent" />
-                      <span className="text-sm font-medium text-foreground">
-                        Download CV
-                      </span>
-                    </span>
-                    <ArrowUpRight className="h-4 w-4 text-muted" />
+                    <Download className="h-5 w-5" />
+                    Download Full CV
                   </a>
                 ) : null}
               </div>
             </div>
-
-            <Card className="bg-white/96">
-              <CardContent className="space-y-6">
-                <div className="space-y-3">
-                  <p className="eyebrow">Send a message</p>
-                  <p className="text-sm leading-7 text-muted">{settings.contact_intro}</p>
-                </div>
-                <ContactForm />
-              </CardContent>
-            </Card>
           </div>
         </section>
       </main>
-      <SiteFooter settings={settings} socialLinks={data.social_links} />
+
+      <footer className="w-full border-t border-slate-200 bg-white pb-8 pt-16">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-8 px-5 md:flex-row sm:px-8">
+          <div className="text-center md:text-left">
+            <div className={cn(notoSerif.className, "mb-2 text-lg text-slate-900")}>Vincent Dania</div>
+            <p className="text-sm text-slate-500">© Vincent Dania. All rights reserved.</p>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-8">
+            {footerLinks.map((link) => (
+              <a
+                key={`${link.platform}-${link.label}`}
+                className={cn(
+                  "text-sm font-bold uppercase tracking-[0.18em] transition-colors",
+                  link.label.toLowerCase() === "linkedin" || link.label.toLowerCase() === "email" || link.label.toLowerCase() === "whatsapp"
+                    ? "text-slate-500 hover:text-accent"
+                    : "text-accent underline underline-offset-4",
+                )}
+                href={link.url}
+                target={link.url.startsWith("http") ? "_blank" : undefined}
+                rel={link.url.startsWith("http") ? "noreferrer" : undefined}
+              >
+                {link.label}
+              </a>
+            ))}
+            {settings.cv_file_url ? (
+              <a
+                className="text-sm font-bold uppercase tracking-[0.18em] text-accent underline underline-offset-4"
+                href={settings.cv_file_url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Download CV
+              </a>
+            ) : null}
+          </div>
+        </div>
+
+        <div className="mx-auto mt-12 flex max-w-7xl justify-center border-t border-slate-100 px-5 pt-8 sm:px-8">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400">
+            Designed for Institutional Impact
+          </p>
+        </div>
+      </footer>
     </>
   );
 }
