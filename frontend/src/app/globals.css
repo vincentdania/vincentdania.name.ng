@@ -159,26 +159,6 @@ textarea {
   line-height: 1.8;
 }
 
-.clamp-2,
-.clamp-3,
-.clamp-4 {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.clamp-2 {
-  -webkit-line-clamp: 2;
-}
-
-.clamp-3 {
-  -webkit-line-clamp: 3;
-}
-
-.clamp-4 {
-  -webkit-line-clamp: 4;
-}
-
 .hero-orbit {
   position: absolute;
   border-radius: 999px;
