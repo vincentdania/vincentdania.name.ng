@@ -274,7 +274,7 @@ export default async function HomePage() {
             <div className="grid items-start gap-16 lg:grid-cols-2">
               <div className="space-y-6">
                 <h2 className={cn(notoSerif.className, "text-4xl text-slate-900")}>
-                  A Synthesis of Strategic Leadership and Technical Precision.
+                  Turning strategy into systems that deliver results.
                 </h2>
                 <div className="h-1 w-24 bg-accent" />
               </div>

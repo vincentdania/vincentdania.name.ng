@@ -90,7 +90,7 @@ class Command(BaseCommand):
             "strengthening institutions, and building digital systems that improve efficiency, "
             "accountability, and outcomes."
         )
-        profile.about_title = "A senior development practitioner with the instincts of a builder."
+        profile.about_title = "Turning strategy into systems that deliver results."
         profile.about_body = (
             "Vincent Dania is a senior programme and project leader with more than 14 years of experience delivering "
             "donor-funded initiatives across governance, gender justice, education, social protection, and extractive-sector accountability.\n\n"
