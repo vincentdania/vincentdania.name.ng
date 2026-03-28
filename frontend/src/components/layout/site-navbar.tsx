@@ -1,9 +1,6 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Noto_Serif } from "next/font/google";
 
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface SiteNavbarProps {
@@ -11,52 +8,64 @@ interface SiteNavbarProps {
   cvUrl?: string;
 }
 
+const notoSerif = Noto_Serif({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
+});
+
 const navItems = [
-  { href: "/", label: "About Vincent" },
+  { href: "/#about", label: "About Vincent" },
+  { href: "/#experience", label: "Experience" },
+  { href: "/#tech", label: "Products" },
   { href: "/articles", label: "Articles" },
 ];
 
 export function SiteNavbar({ siteName, cvUrl }: SiteNavbarProps) {
-  const pathname = usePathname();
-
   return (
-    <header className="sticky top-0 z-50 bg-[rgba(243,238,229,0.92)] backdrop-blur-xl">
-      <div className="shell flex flex-col gap-4 py-5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-3">
-            <p className="font-display text-[1.35rem] leading-none text-foreground">
-              {siteName}
-            </p>
+    <nav className="fixed top-0 z-50 w-full bg-white/90 shadow-sm backdrop-blur-md transition-all duration-300">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-5 sm:px-8 sm:py-6">
+        <Link
+          href="/"
+          className={cn(
+            notoSerif.className,
+            "text-xl tracking-tight text-slate-900 sm:text-2xl",
+          )}
+        >
+          {siteName}
+        </Link>
+
+        <div className="hidden items-center space-x-8 md:flex">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="font-medium text-slate-600 transition-colors hover:text-accent"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-3 sm:gap-4">
+          {cvUrl ? (
+            <a
+              className="hidden rounded-lg px-5 py-2.5 font-semibold text-accent transition-all duration-300 hover:bg-accent/5 sm:inline-flex"
+              href={cvUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Download CV
+            </a>
+          ) : null}
+          <Link
+            className="inline-flex rounded-lg bg-accent px-4 py-2.5 font-semibold text-white transition-all duration-300 hover:bg-accent-strong sm:px-5"
+            href="/#contact"
+          >
+            Contact Me
           </Link>
         </div>
-
-        <div className="flex flex-wrap items-center gap-3 sm:gap-5">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "text-sm font-medium transition-colors",
-                  isActive
-                    ? "text-foreground"
-                    : "text-muted hover:text-foreground",
-                )}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-          {cvUrl ? (
-            <Button asChild size="sm" className="ml-auto sm:ml-2">
-              <a href={cvUrl} target="_blank" rel="noreferrer">
-                Download CV
-              </a>
-            </Button>
-          ) : null}
-        </div>
       </div>
-    </header>
+    </nav>
   );
 }

@@ -23,8 +23,10 @@ import {
 } from "lucide-react";
 
 import { fetchSitePayload } from "@/lib/api";
-import type { ArticlePreview, Experience, ExpertiseCategory, Project, SocialLink } from "@/lib/types";
+import type { ArticlePreview, Experience, ExpertiseCategory, Project } from "@/lib/types";
 import { absoluteUrl, cn } from "@/lib/utils";
+import { SiteFooter } from "@/components/layout/site-footer";
+import { SiteNavbar } from "@/components/layout/site-navbar";
 
 export const dynamic = "force-dynamic";
 
@@ -162,10 +164,6 @@ function getArticleKicker(article: ArticlePreview) {
   return article.categories[0]?.name || article.tags[0]?.name || "Thought Leadership";
 }
 
-function getFooterLinks(links: SocialLink[]) {
-  return links.filter((link) => link.visible_in_footer);
-}
-
 export default async function HomePage() {
   const data = await fetchSitePayload();
   const { profile, site_settings: settings } = data;
@@ -176,7 +174,6 @@ export default async function HomePage() {
     data.featured_article,
     data.recent_articles,
   );
-  const footerLinks = getFooterLinks(data.social_links);
 
   const personSchema = {
     "@context": "https://schema.org",
@@ -191,56 +188,13 @@ export default async function HomePage() {
       addressLocality: "Abuja",
       addressCountry: "Nigeria",
     },
-    sameAs: footerLinks.map((link) => link.url).filter(Boolean),
+    sameAs: [settings.linkedin_url],
     email: settings.public_email,
   };
 
   return (
     <>
-      <nav className="fixed top-0 z-50 w-full bg-white/90 shadow-sm backdrop-blur-md transition-all duration-300">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-5 sm:px-8 sm:py-6">
-          <Link
-            href="/"
-            className={cn(notoSerif.className, "text-xl tracking-tight text-slate-900 sm:text-2xl")}
-          >
-            Vincent Dania
-          </Link>
-
-          <div className="hidden items-center space-x-8 md:flex">
-            <a className="font-medium text-slate-600 transition-colors hover:text-accent" href="#about">
-              About Vincent
-            </a>
-            <a className="font-medium text-slate-600 transition-colors hover:text-accent" href="#experience">
-              Experience
-            </a>
-            <a className="font-medium text-slate-600 transition-colors hover:text-accent" href="#tech">
-              Products
-            </a>
-            <a className="font-medium text-slate-600 transition-colors hover:text-accent" href="#articles">
-              Articles
-            </a>
-          </div>
-
-          <div className="flex items-center gap-3 sm:gap-4">
-            {settings.cv_file_url ? (
-              <a
-                className="hidden rounded-lg px-5 py-2.5 font-semibold text-accent transition-all duration-300 hover:bg-accent/5 sm:inline-flex"
-                href={settings.cv_file_url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Download CV
-              </a>
-            ) : null}
-            <a
-              className="inline-flex rounded-lg bg-accent px-4 py-2.5 font-semibold text-white transition-all duration-300 hover:bg-accent-strong sm:px-5"
-              href="#contact"
-            >
-              Contact Me
-            </a>
-          </div>
-        </div>
-      </nav>
+      <SiteNavbar siteName={settings.site_name} cvUrl={settings.cv_file_url} />
 
       <main className="bg-[#f9fafb] pt-24 text-slate-900">
         <script
@@ -737,50 +691,7 @@ export default async function HomePage() {
           </div>
         </section>
       </main>
-
-      <footer className="w-full border-t border-slate-200 bg-white pb-8 pt-16">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-8 px-5 md:flex-row sm:px-8">
-          <div className="text-center md:text-left">
-            <div className={cn(notoSerif.className, "mb-2 text-lg text-slate-900")}>Vincent Dania</div>
-            <p className="text-sm text-slate-500">© Vincent Dania. All rights reserved.</p>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-8">
-            {footerLinks.map((link) => (
-              <a
-                key={`${link.platform}-${link.label}`}
-                className={cn(
-                  "text-sm font-bold uppercase tracking-[0.18em] transition-colors",
-                  link.label.toLowerCase() === "linkedin" || link.label.toLowerCase() === "email" || link.label.toLowerCase() === "whatsapp"
-                    ? "text-slate-500 hover:text-accent"
-                    : "text-accent underline underline-offset-4",
-                )}
-                href={link.url}
-                target={link.url.startsWith("http") ? "_blank" : undefined}
-                rel={link.url.startsWith("http") ? "noreferrer" : undefined}
-              >
-                {link.label}
-              </a>
-            ))}
-            {settings.cv_file_url ? (
-              <a
-                className="text-sm font-bold uppercase tracking-[0.18em] text-accent underline underline-offset-4"
-                href={settings.cv_file_url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Download CV
-              </a>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="mx-auto mt-12 flex max-w-7xl justify-center border-t border-slate-100 px-5 pt-8 sm:px-8">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400">
-            Designed for Institutional Impact
-          </p>
-        </div>
-      </footer>
+      <SiteFooter settings={settings} socialLinks={data.social_links} />
     </>
   );
 }
