@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CalendarDays, Clock3, UserRound } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { fetchArticle, fetchSitePayload } from "@/lib/api";
@@ -17,6 +18,13 @@ export const dynamic = "force-dynamic";
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
+}
+
+function getArticleKicker(article: {
+  categories: { name: string }[];
+  tags: { name: string }[];
+}) {
+  return article.categories[0]?.name || article.tags[0]?.name || "Article";
 }
 
 export async function generateMetadata({
@@ -91,52 +99,155 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
         />
-        <section className="section-space">
-          <div className="shell grid gap-10 lg:grid-cols-[0.95fr_1.05fr]">
-            <div className="space-y-6">
-              <Button asChild variant="ghost" size="sm">
-                <Link href="/articles">
-                  <ArrowLeft className="h-4 w-4" />
-                  Back to articles
-                </Link>
-              </Button>
-              <div className="flex flex-wrap gap-2">
-                {article.categories.map((category) => (
-                  <Badge key={category.slug}>{category.name}</Badge>
-                ))}
+
+        <section className="section-space pb-12 pt-8">
+          <div className="shell space-y-8">
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/articles">
+                <ArrowLeft className="h-4 w-4" />
+                Back to articles
+              </Link>
+            </Button>
+
+            <div className="grid gap-10 xl:grid-cols-[0.94fr_1.06fr] xl:items-end">
+              <div className="space-y-6">
+                <div className="flex flex-wrap gap-2">
+                  {article.categories.map((category) => (
+                    <Badge key={category.slug}>{category.name}</Badge>
+                  ))}
+                </div>
+
+                <div className="space-y-5">
+                  <p className="eyebrow">{getArticleKicker(article)}</p>
+                  <h1 className="display-title max-w-5xl text-[clamp(3rem,6vw,5.8rem)] text-foreground">
+                    {article.title}
+                  </h1>
+                  <p className="max-w-3xl text-base leading-8 text-muted sm:text-lg">
+                    {article.summary}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-6 text-xs font-medium uppercase tracking-[0.14em] text-muted">
+                  <span className="inline-flex items-center gap-2">
+                    <CalendarDays className="h-4 w-4" />
+                    {formatDate(article.published_at)}
+                  </span>
+                  <span className="inline-flex items-center gap-2">
+                    <Clock3 className="h-4 w-4" />
+                    {article.reading_time_minutes} min read
+                  </span>
+                  <span className="inline-flex items-center gap-2">
+                    <UserRound className="h-4 w-4" />
+                    {article.author_name}
+                  </span>
+                </div>
               </div>
-              <h1 className="display-title text-5xl text-foreground sm:text-6xl">
-                {article.title}
-              </h1>
-              <p className="text-lg leading-8 text-muted">{article.summary}</p>
-              <div className="flex flex-wrap gap-4 text-sm text-muted">
-                <span>{formatDate(article.published_at)}</span>
-                <span>{article.reading_time_minutes} min read</span>
-                <span>{article.author_name}</span>
-              </div>
+
+              <article className="overflow-hidden rounded-[1.8rem] border border-border/70 bg-white shadow-[0_18px_40px_rgba(42,42,42,0.05)]">
+                <div className="relative min-h-[22rem] bg-surface-strong">
+                  {article.cover_image_url ? (
+                    <Image
+                      src={article.cover_image_url}
+                      alt={article.title}
+                      fill
+                      className="object-cover"
+                      sizes="(min-width: 1280px) 38rem, 100vw"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="editorial-grid flex h-full items-end bg-[linear-gradient(180deg,rgba(237,229,215,0.7),rgba(220,239,238,0.55))] p-8 sm:p-10">
+                      <div className="space-y-3">
+                        <p className="eyebrow">Editorial note</p>
+                        <p className="font-display text-[clamp(2rem,4vw,3.2rem)] leading-[1.04] text-foreground">
+                          Writing that connects strategic thinking to practical delivery.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </article>
             </div>
-            <Card className="bg-surface">
-              <CardContent className="space-y-6">
-                <p className="eyebrow">Stay updated</p>
-                <p className="font-display text-4xl leading-tight text-foreground">
-                  Subscribe for new essays and practical reflections.
-                </p>
-                <p className="text-base leading-8 text-muted">
-                  Vincent writes on technology, policy, programme delivery, and systems that improve public value.
-                </p>
-                <SubscriptionForm />
-              </CardContent>
-            </Card>
           </div>
         </section>
 
-        <section className="pb-20">
-          <div className="shell">
-            <Card className="overflow-hidden">
+        <section className="surface-shift pb-20 pt-8">
+          <div className="shell grid gap-8 xl:grid-cols-[minmax(0,1fr)_22rem]">
+            <Card className="overflow-hidden bg-white">
               <CardContent className="article-body max-w-none p-8 sm:p-10 lg:p-14">
                 <div dangerouslySetInnerHTML={{ __html: article.body }} />
               </CardContent>
             </Card>
+
+            <aside className="space-y-5 xl:sticky xl:top-28 xl:self-start">
+              <div className="accent-panel overflow-hidden rounded-[1.6rem] px-6 py-7">
+                <div className="space-y-5">
+                  <div className="space-y-3">
+                    <p className="eyebrow text-white/65">Stay updated</p>
+                    <h2 className="font-display text-3xl leading-tight text-white">
+                      Subscribe for new essays and practical reflections.
+                    </h2>
+                    <p className="text-sm leading-7 text-white/72">
+                      Vincent writes on technology, policy, programme delivery, and systems that improve public value.
+                    </p>
+                  </div>
+
+                  <div className="rounded-[1.25rem] border border-white/10 bg-white/96 p-4">
+                    <SubscriptionForm />
+                  </div>
+                </div>
+              </div>
+
+              <Card className="bg-white/92">
+                <CardContent className="space-y-5">
+                  <div className="space-y-3">
+                    <p className="eyebrow">Article details</p>
+                    <h3 className="font-display text-3xl leading-tight text-foreground">
+                      Context at a glance.
+                    </h3>
+                  </div>
+
+                  <div className="space-y-4 text-sm leading-7 text-muted">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                        Published
+                      </p>
+                      <p className="mt-1 text-foreground">{formatDate(article.published_at)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                        Reading time
+                      </p>
+                      <p className="mt-1 text-foreground">
+                        {article.reading_time_minutes} minutes
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                        Topics
+                      </p>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {article.categories.map((category) => (
+                          <span
+                            key={category.slug}
+                            className="rounded-lg bg-surface px-3 py-1 text-xs uppercase tracking-[0.14em] text-foreground"
+                          >
+                            {category.name}
+                          </span>
+                        ))}
+                        {article.tags.slice(0, 4).map((tag) => (
+                          <span
+                            key={tag.slug}
+                            className="rounded-lg border border-border px-3 py-1 text-xs uppercase tracking-[0.14em] text-muted-strong"
+                          >
+                            {tag.name}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </aside>
           </div>
         </section>
       </main>
