@@ -642,11 +642,11 @@ export default async function HomePage() {
             <div className="relative z-10 grid gap-16 lg:grid-cols-2 lg:items-center">
               <div className="space-y-8">
                 <h2 className={cn(notoSerif.className, "text-4xl text-slate-900 sm:text-5xl")}>
-                  Initiate a Conversation.
+                  Start a Conversation
                 </h2>
                 <p className="max-w-md text-xl leading-relaxed text-slate-500">
-                  Whether you&apos;re looking for program leadership, technical advisory, or a
-                  keynote speaker, I&apos;m ready to discuss how I can contribute.
+                  Whether it&apos;s AI, programme design and delivery, or capacity-building and
+                  training, I&apos;m available to explore how I can support your goals.
                 </p>
               </div>
 

@@ -126,10 +126,10 @@ class Command(BaseCommand):
             "Vincent is open to senior programme leadership, project management, consulting, advisory, remote, and onsite roles "
             "where donor accountability, operational clarity, and technology-enabled delivery matter."
         )
-        profile.contact_title = "Work with Vincent."
+        profile.contact_title = "Start a Conversation"
         profile.contact_copy = (
-            "If you need a programme leader who understands delivery, governance, partnerships, and digital systems, "
-            "this is a strong time to connect."
+            "Whether it's AI, programme design and delivery, or capacity-building and training, "
+            "I'm available to explore how I can support your goals."
         )
         profile.save()
 
