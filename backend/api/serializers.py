@@ -1,3 +1,6 @@
+from urllib.parse import urljoin
+
+from django.conf import settings
 from rest_framework import serializers
 
 from content.models import Article, Project
@@ -19,6 +22,10 @@ from engagement.models import ContactMessage, Subscriber
 def media_url(request, value):
     if not value:
         return ""
+    if str(value.url).startswith(("http://", "https://")):
+        return value.url
+    if settings.SITE_ORIGIN:
+        return urljoin(f"{settings.SITE_ORIGIN.rstrip('/')}/", value.url.lstrip("/"))
     if request is None:
         return value.url
     return request.build_absolute_uri(value.url)

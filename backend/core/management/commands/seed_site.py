@@ -63,7 +63,7 @@ class Command(BaseCommand):
             "Available for remote and onsite roles, programme leadership assignments, consulting engagements, "
             "and advisory work that require execution discipline, governance literacy, and technology fluency."
         )
-        settings.footer_note = "Built for credible leadership, practical execution, and globally relevant African expertise."
+        settings.footer_note = "Programme leadership, institutional strengthening, and digital systems for measurable social impact."
         settings.meta_title = "Vincent Dania | Programme Leadership, IT & Thought Leadership"
         settings.meta_description = (
             "Portfolio and articles for Vincent Dania, a senior programme and project manager, IT professional, "
@@ -86,9 +86,9 @@ class Command(BaseCommand):
         profile.hero_eyebrow = "Senior Programme & Project Manager | IT Professional | Thought Leader"
         profile.hero_title = "Designing systems that maximize value, eliminate waste, and reach the farthest behind."
         profile.hero_subtitle = (
-            "Vincent Dania works at the intersection of programme delivery, governance, social protection, "
-            "gender justice, and technology. He brings 14+ years of experience combining institutional leadership, "
-            "monitoring and learning discipline, and hands-on product execution."
+            "Vincent Dania is a programme and technology leader delivering social impact programmes, "
+            "strengthening institutions, and building digital systems that improve efficiency, "
+            "accountability, and outcomes."
         )
         profile.about_title = "A senior development practitioner with the instincts of a builder."
         profile.about_body = (
