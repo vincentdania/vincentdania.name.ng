@@ -400,11 +400,11 @@ export default async function HomePage() {
             <div className="mb-16 flex flex-col justify-between gap-8 md:flex-row md:items-end">
               <div>
                 <h2 className={cn(notoSerif.className, "mb-4 text-4xl text-white")}>
-                  The &quot;Builder&quot; Portfolio
+                  The Builder Portfolio
                 </h2>
                 <p className="max-w-xl text-slate-400">
-                  Strategic IT products designed and deployed to solve complex organizational and
-                  educational challenges. From AI literacy to business automation.
+                  A portfolio of purpose-built digital solutions addressing complex organisational
+                  and educational challenges.
                 </p>
               </div>
               <a

@@ -101,10 +101,10 @@ class Command(BaseCommand):
             "With a Master's degree in Information Technology, adjunct teaching experience in programming, and a portfolio "
             "of live digital products, he brings rare fluency between strategy, systems, and execution."
         )
-        profile.builder_title = "Digital products and platforms built with practical intent."
+        profile.builder_title = "The Builder Portfolio"
         profile.builder_intro = (
-            "The product portfolio below reinforces a simple point: Vincent does not only coordinate programmes. "
-            "He also understands how systems are designed, shipped, and improved in the real world."
+            "A portfolio of purpose-built digital solutions addressing complex organisational "
+            "and educational challenges."
         )
         profile.expertise_title = "Core competencies grounded in programme rigor and systems thinking."
         profile.expertise_intro = (
