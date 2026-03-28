@@ -1,5 +1,3 @@
-import { Noto_Serif } from "next/font/google";
-
 import type { SiteSettings, SocialLink } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -8,24 +6,12 @@ interface SiteFooterProps {
   socialLinks: SocialLink[];
 }
 
-const notoSerif = Noto_Serif({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  display: "swap",
-});
-
 export function SiteFooter({ settings, socialLinks }: SiteFooterProps) {
   const footerLinks = socialLinks.filter((link) => link.visible_in_footer);
 
   return (
     <footer className="w-full border-t border-slate-200 bg-white pb-8 pt-16">
-      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-8 px-5 md:flex-row sm:px-8">
-        <div className="text-center md:text-left">
-          <div className={cn(notoSerif.className, "mb-2 text-lg text-slate-900")}>
-            {settings.site_name}
-          </div>
-        </div>
-
+      <div className="mx-auto flex max-w-7xl justify-center px-5 sm:px-8">
         <div className="flex flex-wrap justify-center gap-8">
           {footerLinks.map((link) => {
             const isDownload = link.label.toLowerCase().includes("download");

@@ -659,7 +659,7 @@ export default async function HomePage() {
                   Send Email
                 </a>
                 <a
-                  className="flex w-full items-center justify-center gap-3 rounded-lg bg-slate-900 py-5 text-center text-lg font-bold text-white shadow-lg transition-all hover:bg-black"
+                  className="flex w-full items-center justify-center gap-3 rounded-lg bg-[#25D366] py-5 text-center text-lg font-bold text-white shadow-lg shadow-[#25D366]/25 transition-all hover:bg-[#1ebe5d]"
                   href={settings.whatsapp_url}
                   target="_blank"
                   rel="noreferrer"
