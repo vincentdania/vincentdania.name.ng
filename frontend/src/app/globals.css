@@ -1,19 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4f1eb;
-  --surface: #fffdf8;
-  --surface-strong: #f8f4ec;
-  --surface-deep: #ece6db;
-  --foreground: #17221c;
-  --muted: #5b6962;
-  --muted-strong: #3c4b45;
+  --background: #f3eee5;
+  --surface: #fbf8f2;
+  --surface-strong: #ede5d7;
+  --surface-deep: #ddd2c0;
+  --foreground: #2a2a2a;
+  --muted: #66717c;
+  --muted-strong: #4b5966;
   --accent: #008080;
   --accent-strong: #006666;
-  --accent-soft: #d8efef;
-  --border: rgba(23, 34, 28, 0.08);
-  --shadow: 0 22px 60px rgba(23, 34, 28, 0.08);
-  --shadow-soft: 0 12px 30px rgba(23, 34, 28, 0.05);
+  --accent-soft: #dcefee;
+  --panel-dark: #26282c;
+  --panel-dark-soft: #31353b;
+  --border: rgba(42, 42, 42, 0.09);
+  --shadow: 0 22px 60px rgba(42, 42, 42, 0.08);
+  --shadow-soft: 0 12px 30px rgba(42, 42, 42, 0.05);
 }
 
 @theme inline {
@@ -27,6 +29,8 @@
   --color-accent: var(--accent);
   --color-accent-strong: var(--accent-strong);
   --color-accent-soft: var(--accent-soft);
+  --color-panel-dark: var(--panel-dark);
+  --color-panel-dark-soft: var(--panel-dark-soft);
   --color-border: var(--border);
   --font-sans: var(--font-body);
   --font-mono: var(--font-code);
@@ -44,8 +48,8 @@ body {
   background: var(--background);
   color: var(--foreground);
   background-image:
-    radial-gradient(circle at top right, rgba(0, 128, 128, 0.08), transparent 30%),
-    radial-gradient(circle at bottom left, rgba(0, 128, 128, 0.06), transparent 28%);
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.92), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(0, 128, 128, 0.05), transparent 26%);
   font-family: var(--font-body), sans-serif;
   min-height: 100vh;
   text-rendering: optimizeLegibility;
@@ -74,19 +78,19 @@ textarea {
 
 .shell {
   margin-inline: auto;
-  width: min(100% - 2rem, 1180px);
+  width: min(100% - 2rem, 1240px);
 }
 
 .section-space {
-  padding-block: 5.5rem;
+  padding-block: 6.5rem;
 }
 
 .eyebrow {
-  color: var(--accent);
+  color: var(--muted);
   font-family: var(--font-code), monospace;
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
@@ -101,17 +105,17 @@ textarea {
 }
 
 .soft-panel {
-  background: color-mix(in srgb, var(--surface) 88%, white);
+  background: color-mix(in srgb, var(--surface) 94%, white);
   box-shadow: var(--shadow-soft);
 }
 
 .editorial-panel {
-  background: linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(250, 247, 240, 0.98));
+  background: linear-gradient(180deg, rgba(251, 248, 242, 0.98), rgba(247, 240, 230, 0.98));
   box-shadow: var(--shadow);
 }
 
 .accent-panel {
-  background: linear-gradient(180deg, rgba(0, 104, 104, 0.97), rgba(0, 74, 74, 0.99));
+  background: linear-gradient(180deg, rgba(49, 53, 59, 0.99), rgba(38, 40, 44, 1));
   color: white;
 }
 
@@ -123,10 +127,10 @@ textarea {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.28) 0.8px, transparent 0.8px);
-  background-size: 14px 14px;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.2) 0.8px, transparent 0.8px);
+  background-size: 16px 16px;
   mix-blend-mode: soft-light;
-  opacity: 0.2;
+  opacity: 0.16;
   pointer-events: none;
 }
 
@@ -162,11 +166,24 @@ textarea {
 .hero-orbit {
   position: absolute;
   border-radius: 999px;
-  border: 1px solid rgba(0, 128, 128, 0.15);
+  border: 1px solid rgba(42, 42, 42, 0.08);
 }
 
 .fade-in {
   animation: fade-in 800ms ease forwards;
+}
+
+.surface-shift {
+  background:
+    linear-gradient(180deg, rgba(251, 248, 242, 0.8), rgba(244, 237, 227, 0.92)),
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.75), transparent 38%);
+}
+
+.editorial-grid {
+  background-image:
+    linear-gradient(rgba(42, 42, 42, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42, 42, 42, 0.035) 1px, transparent 1px);
+  background-size: 44px 44px;
 }
 
 @keyframes fade-in {
@@ -182,6 +199,6 @@ textarea {
 
 @media (max-width: 768px) {
   .section-space {
-    padding-block: 4rem;
+    padding-block: 4.5rem;
   }
 }

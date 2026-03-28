@@ -6,7 +6,7 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "rounded-[2rem] border border-border/60 bg-white/95 shadow-[0_18px_40px_rgba(23,34,28,0.06)]",
+        "rounded-[1.5rem] border border-border/70 bg-white/95 shadow-[0_18px_40px_rgba(42,42,42,0.05)]",
         className,
       )}
       {...props}
@@ -15,7 +15,7 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
-  return <div className={cn("p-7 sm:p-8", className)} {...props} />;
+  return <div className={cn("p-6 sm:p-7", className)} {...props} />;
 }
 
 export { Card, CardContent };
