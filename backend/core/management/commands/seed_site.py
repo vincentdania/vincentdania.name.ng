@@ -84,7 +84,7 @@ class Command(BaseCommand):
 
         profile = ProfileContent.load()
         profile.hero_eyebrow = "Senior Programme & Project Manager | IT Professional | Thought Leader"
-        profile.hero_title = "Leading donor-funded programmes and building digital systems that make implementation stronger."
+        profile.hero_title = "Designing systems that maximize value, eliminate waste, and reach the farthest behind."
         profile.hero_subtitle = (
             "Vincent Dania works at the intersection of programme delivery, governance, social protection, "
             "gender justice, and technology. He brings 14+ years of experience combining institutional leadership, "
