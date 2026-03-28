@@ -648,14 +648,6 @@ export default async function HomePage() {
                   Whether you&apos;re looking for program leadership, technical advisory, or a
                   keynote speaker, I&apos;m ready to discuss how I can contribute.
                 </p>
-                <div className="space-y-4">
-                  <a className="block text-2xl font-semibold text-accent hover:underline" href={`mailto:${settings.public_email}`}>
-                    {settings.public_email}
-                  </a>
-                  <p className="font-medium tracking-wide text-slate-500">
-                    WhatsApp: +234 803 421 0082
-                  </p>
-                </div>
               </div>
 
               <div className="flex flex-col gap-4">

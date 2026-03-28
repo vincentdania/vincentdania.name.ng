@@ -17,7 +17,7 @@ const notoSerif = Noto_Serif({
 const navItems = [
   { href: "/#about", label: "About Vincent" },
   { href: "/#experience", label: "Experience" },
-  { href: "/#tech", label: "Products" },
+  { href: "/#tech", label: "Portfolio" },
   { href: "/articles", label: "Articles" },
 ];
 
