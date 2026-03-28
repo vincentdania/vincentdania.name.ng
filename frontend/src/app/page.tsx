@@ -345,11 +345,8 @@ export default async function HomePage() {
         <section id="experience" className="mx-auto max-w-7xl px-5 py-24 sm:px-8">
           <div className="mb-16 text-center">
             <h2 className={cn(notoSerif.className, "mb-4 text-4xl text-slate-900")}>
-              Professional Trajectory
+              Career Highlights
             </h2>
-            <p className="text-sm font-bold uppercase tracking-[0.22em] text-accent">
-              Strategic Career Milestones
-            </p>
           </div>
 
           <div className="space-y-12">
