@@ -24,9 +24,6 @@ export function SiteFooter({ settings, socialLinks }: SiteFooterProps) {
           <div className={cn(notoSerif.className, "mb-2 text-lg text-slate-900")}>
             {settings.site_name}
           </div>
-          <p className="text-sm text-slate-500">
-            &copy; Vincent Dania. All rights reserved.
-          </p>
         </div>
 
         <div className="flex flex-wrap justify-center gap-8">
@@ -64,8 +61,8 @@ export function SiteFooter({ settings, socialLinks }: SiteFooterProps) {
       </div>
 
       <div className="mx-auto mt-12 flex max-w-7xl justify-center border-t border-slate-100 px-5 pt-8 sm:px-8">
-        <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400">
-          Designed for Institutional Impact
+        <p className="text-center text-sm text-slate-500">
+          © 2026. Designed &amp; Developed by Vincent Dania. All rights reserved.
         </p>
       </div>
     </footer>
