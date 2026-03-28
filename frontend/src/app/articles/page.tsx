@@ -42,12 +42,12 @@ export default async function ArticlesPage() {
         <section className="section-space">
           <div className="shell">
             <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-              <div className="space-y-6">
+              <div className="space-y-5">
                 <Badge>Featured article</Badge>
                 <h1 className="display-title text-5xl text-foreground sm:text-7xl">
                   {featured?.title}
                 </h1>
-                <p className="max-w-2xl text-lg leading-8 text-muted">
+                <p className="clamp-4 max-w-2xl text-lg leading-8 text-muted">
                   {featured?.summary}
                 </p>
                 <div className="flex flex-wrap items-center gap-4 text-sm text-muted">
@@ -63,15 +63,33 @@ export default async function ArticlesPage() {
                   </Button>
                 ) : null}
               </div>
-              <Card className="overflow-hidden">
-                <CardContent className="space-y-6">
+              <Card className="overflow-hidden border-border/60 bg-white/92">
+                <CardContent className="space-y-5">
                   <p className="eyebrow">Editorial focus</p>
                   <p className="font-display text-4xl leading-tight text-foreground">
-                    Policy, programme delivery, and digital systems written with practical intent.
+                    Policy, delivery, and digital systems written with practical intent.
                   </p>
-                  <p className="text-base leading-8 text-muted">
-                    The articles archive blends research-based thinking with field-tested lessons from donor-funded delivery, social impact systems, governance work, and digital transformation.
+                  <p className="text-sm leading-7 text-muted">
+                    The archive blends research-based thinking with field-tested lessons from governance work, donor-funded delivery, and technology-enabled execution.
                   </p>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="rounded-[1.4rem] bg-surface p-4">
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                        Tone
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-foreground">
+                        Thoughtful, clear, and implementation-aware.
+                      </p>
+                    </div>
+                    <div className="rounded-[1.4rem] bg-surface p-4">
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                        Subjects
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-foreground">
+                        Social protection, systems, governance, and digital transformation.
+                      </p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -83,7 +101,7 @@ export default async function ArticlesPage() {
             <SectionHeader
               eyebrow="Archive"
               title="Perspectives and research"
-              description="Search, filter, and explore Vincent's writing across policy, digital systems, and institutional effectiveness."
+              description="Search, filter, and scan the archive without wading through long previews."
             />
             <ArticlesBrowser articles={articles} />
           </div>
@@ -96,7 +114,7 @@ export default async function ArticlesPage() {
                 <SectionHeader
                   eyebrow="Subscribe"
                   title="Receive new articles directly."
-                  description="Join the list for new essays, practical reflections, and research-led writing on leadership, policy, and technology."
+                  description="A lighter way to stay updated on new essays and reflections."
                 />
                 <SubscriptionForm />
               </CardContent>

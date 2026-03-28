@@ -4,8 +4,11 @@ import {
   ArrowRight,
   BriefcaseBusiness,
   Download,
+  Globe2,
+  Landmark,
   Mail,
   MessageCircleMore,
+  MonitorCog,
 } from "lucide-react";
 
 import { fetchSitePayload } from "@/lib/api";
@@ -37,6 +40,34 @@ export const metadata = {
 export default async function HomePage() {
   const data = await fetchSitePayload();
   const { site_settings: settings, profile } = data;
+  const heroPillars = [
+    {
+      title: "Programme leadership",
+      detail: "Donor-funded delivery with pace, judgment, and accountability.",
+      icon: Landmark,
+    },
+    {
+      title: "Institutional strengthening",
+      detail: "Systems, MEL discipline, and stakeholder alignment that hold.",
+      icon: BriefcaseBusiness,
+    },
+    {
+      title: "Digital systems",
+      detail: "Products and platforms that improve efficiency and reach.",
+      icon: MonitorCog,
+    },
+  ];
+  const aboutHighlights = [
+    "14+ years across programme delivery, governance, and social protection.",
+    "Strong range across MEL, donor reporting, coordination, and execution.",
+    "Hands-on builder of learning systems, web platforms, and digital products.",
+  ];
+  const featuredExperience = data.experiences.slice(0, 4);
+  const compactExpertise = data.expertise_categories.map((category) => ({
+    ...category,
+    previewSkills: category.skills.slice(0, 4),
+    extraSkills: Math.max(category.skills.length - 4, 0),
+  }));
 
   const personSchema = {
     "@context": "https://schema.org",
@@ -71,10 +102,30 @@ export default async function HomePage() {
               <h1 className="display-title mt-8 text-5xl text-foreground sm:text-7xl">
                 {profile.hero_title}
               </h1>
-              <p className="mt-8 max-w-2xl text-lg leading-8 text-muted sm:text-xl">
+              <p className="mt-7 max-w-2xl text-lg leading-8 text-muted sm:text-xl">
                 {profile.hero_subtitle}
               </p>
-              <div className="mt-10 flex flex-wrap gap-3">
+              <div className="mt-8 grid gap-3 sm:grid-cols-3">
+                {heroPillars.map((item) => {
+                  const Icon = item.icon;
+
+                  return (
+                    <div
+                      key={item.title}
+                      className="rounded-[1.6rem] border border-border/70 bg-white/78 p-4 shadow-[0_14px_30px_rgba(23,34,28,0.04)]"
+                    >
+                      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-accent-soft text-accent">
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <p className="mt-4 text-sm font-semibold text-foreground">
+                        {item.title}
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-muted">{item.detail}</p>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-8 flex flex-wrap gap-3">
                 {settings.cv_file_url ? (
                   <Button asChild size="lg">
                     <a href={settings.cv_file_url} target="_blank" rel="noreferrer">
@@ -125,11 +176,37 @@ export default async function HomePage() {
                   </div>
                 </div>
               </div>
-              <Card className="absolute -bottom-6 left-5 w-[14rem] bg-white">
+              <Card className="absolute left-5 top-5 hidden w-[13rem] border-border/60 bg-white/92 lg:block">
+                <CardContent className="space-y-2 p-4">
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-muted">
+                    Base
+                  </p>
+                  <p className="font-display text-2xl leading-none text-foreground">
+                    Abuja, Nigeria
+                  </p>
+                  <p className="text-sm leading-6 text-muted">
+                    Open to remote, onsite, and advisory opportunities.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="absolute -bottom-6 left-5 w-[14rem] border-border/60 bg-white">
                 <CardContent className="space-y-2 p-5">
                   <p className="font-display text-4xl leading-none text-accent">14+</p>
                   <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-muted">
                     Years of experience
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="absolute bottom-8 right-5 hidden w-[13rem] border-border/60 bg-accent text-white xl:block">
+                <CardContent className="space-y-2 p-4">
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-white/70">
+                    Positioning
+                  </p>
+                  <p className="font-display text-2xl leading-none">
+                    African-rooted.
+                  </p>
+                  <p className="text-sm leading-6 text-white/80">
+                    Internationally credible. Built for delivery.
                   </p>
                 </CardContent>
               </Card>
@@ -140,8 +217,9 @@ export default async function HomePage() {
             {data.credibility_stats.map((stat) => (
               <div
                 key={stat.label}
-                className="rounded-[1.75rem] border border-border/70 bg-white/80 px-5 py-5 text-sm font-medium text-muted shadow-sm"
+                className="flex items-center gap-3 rounded-[1.75rem] border border-border/70 bg-white/80 px-5 py-5 text-sm font-medium text-muted shadow-sm"
               >
+                <span className="h-2.5 w-2.5 rounded-full bg-accent" />
                 {stat.label}
               </div>
             ))}
@@ -149,16 +227,58 @@ export default async function HomePage() {
         </section>
 
         <section className="section-space">
-          <div className="shell grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="shell grid gap-8 lg:grid-cols-[0.78fr_1.22fr]">
             <SectionHeader
               eyebrow="About Vincent"
               title={profile.about_title}
-              description="A personal brand built around delivery, public value, and technology-enabled execution."
+              description="A compact view of the blend behind Vincent's work: programme rigor, institutional judgment, and builder-level fluency."
             />
-            <div className="space-y-6 text-base leading-8 text-muted sm:text-lg">
-              {profile.about_paragraphs.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
+            <div className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
+              <Card className="editorial-panel overflow-hidden">
+                <CardContent className="space-y-5">
+                  {profile.about_paragraphs.slice(0, 2).map((paragraph) => (
+                    <p
+                      key={paragraph}
+                      className="text-base leading-8 text-muted sm:text-[1.02rem]"
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
+                </CardContent>
+              </Card>
+              <div className="grid gap-4">
+                {aboutHighlights.map((item, index) => (
+                  <Card
+                    key={item}
+                    className={index === 1 ? "bg-accent text-white" : "bg-white/90"}
+                  >
+                    <CardContent className="p-5">
+                      <p
+                        className={`text-sm leading-7 ${
+                          index === 1 ? "text-white/82" : "text-muted"
+                        }`}
+                      >
+                        {item}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+                <Card className="bg-surface">
+                  <CardContent className="flex items-center gap-4 p-5">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-soft text-accent">
+                      <Globe2 className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                        Value proposition
+                      </p>
+                      <p className="mt-2 font-display text-2xl leading-tight text-foreground">
+                        Strategy that stays executable.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </div>
         </section>
@@ -168,7 +288,7 @@ export default async function HomePage() {
             <SectionHeader
               eyebrow="Impact"
               title="Career highlights backed by measurable delivery."
-              description="Programme leadership, digital systems, and community-facing outcomes drawn directly from Vincent's work."
+              description="Selected proof points from grant delivery, digital learning, and institution-facing systems work."
             />
             <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {data.impact_metrics.map((metric) => (
@@ -183,9 +303,10 @@ export default async function HomePage() {
             <SectionHeader
               eyebrow="Experience"
               title="A professional trajectory defined by leadership, accountability, and structured execution."
+              description="Selected roles across movement building, governance work, MEL-heavy delivery, and technology-enabled implementation."
             />
-            <div className="space-y-6">
-              {data.experiences.map((experience) => (
+            <div className="grid gap-6 xl:grid-cols-2">
+              {featuredExperience.map((experience) => (
                 <ExperienceCard
                   key={`${experience.title}-${experience.organization}`}
                   experience={experience}
@@ -201,7 +322,7 @@ export default async function HomePage() {
               <SectionHeader
                 eyebrow="Digital Products & Platforms"
                 title={profile.builder_title}
-                description={profile.builder_intro}
+                description="A tighter view of the platforms and products that show Vincent can move from management into build execution."
                 theme="inverse"
               />
             </div>
@@ -218,26 +339,31 @@ export default async function HomePage() {
             <SectionHeader
               eyebrow="Expertise"
               title={profile.expertise_title}
-              description={profile.expertise_intro}
+              description="Capability clusters designed to scan quickly."
             />
             <div className="mt-12 grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-              {data.expertise_categories.map((category) => (
+              {compactExpertise.map((category) => (
                 <Card key={category.title} className="h-full">
-                  <CardContent className="space-y-5">
+                  <CardContent className="space-y-4">
                     <div>
                       <p className="eyebrow">{category.title}</p>
-                      <p className="mt-4 text-sm leading-7 text-muted">
+                      <p className="clamp-3 mt-4 text-sm leading-6 text-muted">
                         {category.description}
                       </p>
                     </div>
-                    <ul className="space-y-3 text-sm leading-7 text-muted-strong">
-                      {category.skills.map((skill) => (
+                    <ul className="space-y-3 text-sm leading-6 text-muted-strong">
+                      {category.previewSkills.map((skill) => (
                         <li key={skill} className="flex gap-3">
                           <span className="mt-2 h-2 w-2 rounded-full bg-accent" />
                           <span>{skill}</span>
                         </li>
                       ))}
                     </ul>
+                    {category.extraSkills > 0 ? (
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                        +{category.extraSkills} more capabilities
+                      </p>
+                    ) : null}
                   </CardContent>
                 </Card>
               ))}
@@ -251,7 +377,7 @@ export default async function HomePage() {
               <SectionHeader
                 eyebrow="Education"
                 title={profile.education_title}
-                description={profile.education_intro}
+                description="Academic and professional depth, presented without the clutter."
               />
               <div className="space-y-4">
                 {data.education.map((credential) => (
@@ -266,7 +392,7 @@ export default async function HomePage() {
                       <p className="text-base font-medium text-accent">
                         {credential.institution}
                       </p>
-                      <p className="text-sm leading-7 text-muted">
+                      <p className="text-sm leading-6 text-muted">
                         {credential.location}
                         {credential.note ? ` • ${credential.note}` : ""}
                       </p>
@@ -282,7 +408,7 @@ export default async function HomePage() {
                 title="Globally recognized professional credentials."
               />
               <Card className="bg-surface">
-                <CardContent className="space-y-4">
+                <CardContent className="grid gap-4 sm:grid-cols-2">
                   {data.certifications.map((certification) => (
                     <div
                       key={certification.title}
@@ -308,17 +434,17 @@ export default async function HomePage() {
               <SectionHeader
                 eyebrow="Thought Leadership"
                 title={profile.thought_leadership_title}
-                description={profile.thought_leadership_intro}
+                description="Recent writing, surfaced in a lighter editorial layout."
               />
               <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
                 <Card className="overflow-hidden bg-white">
                   <CardContent className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-                    <div className="space-y-5">
+                    <div className="space-y-4">
                       <Badge>{data.featured_article.categories[0]?.name || "Featured"}</Badge>
                       <h3 className="font-display text-4xl leading-tight text-foreground">
                         {data.featured_article.title}
                       </h3>
-                      <p className="text-base leading-8 text-muted">
+                      <p className="clamp-4 text-base leading-7 text-muted">
                         {data.featured_article.summary}
                       </p>
                       <div className="flex flex-wrap items-center gap-4 text-sm text-muted">
@@ -332,10 +458,13 @@ export default async function HomePage() {
                         </Link>
                       </Button>
                     </div>
-                    <div className="rounded-[2rem] bg-[linear-gradient(180deg,rgba(15,91,76,0.16),rgba(15,91,76,0.03))] p-6">
+                    <div className="rounded-[2rem] bg-[linear-gradient(180deg,rgba(0,128,128,0.15),rgba(0,128,128,0.03))] p-6">
                       <p className="eyebrow">Editorial note</p>
-                      <p className="mt-6 font-display text-3xl leading-tight text-foreground">
+                      <p className="mt-5 font-display text-3xl leading-tight text-foreground">
                         Clear thinking on policy, technology, and practical delivery.
+                      </p>
+                      <p className="mt-4 text-sm leading-6 text-muted">
+                        Research-led, implementation-aware, and written for people who need usable insight.
                       </p>
                     </div>
                   </CardContent>
@@ -361,15 +490,15 @@ export default async function HomePage() {
               <SectionHeader
                 eyebrow="Open to opportunities"
                 title={profile.opportunities_title}
-                description={profile.opportunities_copy}
+                description="Work settings and mandates where Vincent adds the most value."
                 theme="inverse"
               />
                 <div className="flex flex-wrap gap-3">
                   {data.opportunities.map((opportunity) => (
                     <span
                       key={opportunity.title}
-                      className="rounded-full border border-white/15 bg-white/8 px-4 py-2 text-sm text-white/88"
-                    >
+                    className="rounded-full border border-white/15 bg-white/8 px-4 py-2 text-sm text-white/88"
+                  >
                       {opportunity.title}
                     </span>
                   ))}
@@ -400,11 +529,11 @@ export default async function HomePage() {
               <SectionHeader
                 eyebrow="Contact"
                 title={profile.contact_title}
-                description={profile.contact_copy}
+                description="A cleaner path to start a conversation."
               />
               <Card>
                 <CardContent className="space-y-5">
-                  <p className="text-sm leading-7 text-muted">
+                  <p className="text-sm leading-6 text-muted">
                     {settings.contact_intro}
                   </p>
                   <div className="grid gap-3">

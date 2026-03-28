@@ -101,8 +101,8 @@ export function SubscriptionForm({ className }: { className?: string }) {
           {isPending ? "Submitting..." : "Subscribe"}
         </Button>
       </div>
-      <p className="text-sm leading-7 text-muted">
-        Receive new articles and occasional reflections on programme delivery, governance, and digital systems.
+      <p className="text-sm leading-6 text-muted">
+        New essays and practical reflections, sent occasionally.
       </p>
       {serverMessage ? <p className="text-sm text-accent">{serverMessage}</p> : null}
     </form>

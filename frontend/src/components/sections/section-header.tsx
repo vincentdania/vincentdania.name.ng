@@ -20,7 +20,7 @@ export function SectionHeader({
   return (
     <div
       className={cn(
-        "max-w-3xl",
+        "max-w-2xl",
         align === "center" && "mx-auto text-center",
         className,
       )}
@@ -40,8 +40,8 @@ export function SectionHeader({
       </h2>
       {description ? (
         <p
-          className={cn(
-            "mt-5 text-base leading-8 sm:text-lg",
+        className={cn(
+            "mt-4 text-sm leading-7 sm:text-base",
             theme === "inverse" ? "text-white/74" : "text-muted",
           )}
         >

@@ -38,19 +38,25 @@ export function ArticlesBrowser({ articles }: ArticlesBrowserProps) {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-xl">
-          <label htmlFor="article-search" className="mb-2 block text-sm font-medium text-foreground">
-            Search articles
-          </label>
-          <Input
-            id="article-search"
-            placeholder="Search by title, theme, or topic"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-          />
+      <div className="rounded-[2rem] border border-border/60 bg-white/92 p-5 shadow-[0_16px_40px_rgba(23,34,28,0.05)] sm:p-6">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-xl">
+            <p className="eyebrow mb-3">Browse</p>
+            <label htmlFor="article-search" className="mb-2 block text-sm font-medium text-foreground">
+              Search articles
+            </label>
+            <Input
+              id="article-search"
+              placeholder="Search by title, theme, or topic"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+          </div>
+          <p className="text-sm text-muted">
+            {filteredArticles.length} article{filteredArticles.length === 1 ? "" : "s"} shown
+          </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="mt-5 flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => setActiveCategory("all")}
@@ -58,7 +64,7 @@ export function ArticlesBrowser({ articles }: ArticlesBrowserProps) {
               "rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition-colors",
               activeCategory === "all"
                 ? "bg-accent text-white"
-                : "bg-white text-muted hover:text-foreground",
+                : "bg-surface text-muted hover:text-foreground",
             )}
           >
             All
@@ -78,7 +84,7 @@ export function ArticlesBrowser({ articles }: ArticlesBrowserProps) {
                   "rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition-colors",
                   activeCategory === category
                     ? "bg-accent text-white"
-                    : "bg-white text-muted hover:text-foreground",
+                    : "bg-surface text-muted hover:text-foreground",
                 )}
               >
                 {label}
