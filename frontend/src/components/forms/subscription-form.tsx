@@ -20,7 +20,15 @@ const subscriptionSchema = z.object({
 
 type SubscriptionValues = z.infer<typeof subscriptionSchema>;
 
-export function SubscriptionForm({ className }: { className?: string }) {
+type SubscriptionFormProps = {
+  className?: string;
+  layout?: "inline" | "stacked";
+};
+
+export function SubscriptionForm({
+  className,
+  layout = "inline",
+}: SubscriptionFormProps) {
   const [serverMessage, setServerMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const {
@@ -78,7 +86,12 @@ export function SubscriptionForm({ className }: { className?: string }) {
 
   return (
     <form onSubmit={onSubmit} className={cn("space-y-4", className)}>
-      <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+      <div
+        className={cn(
+          "grid gap-3",
+          layout === "stacked" ? "grid-cols-1" : "sm:grid-cols-[minmax(0,1fr)_auto]",
+        )}
+      >
         <div className="space-y-2">
           <Label htmlFor="subscription-email">Email address</Label>
           <Input
@@ -86,6 +99,7 @@ export function SubscriptionForm({ className }: { className?: string }) {
             type="email"
             placeholder="name@example.com"
             aria-invalid={Boolean(errors.email)}
+            className={cn(layout === "stacked" && "h-14 text-base")}
             {...register("email")}
           />
           {errors.email ? (
@@ -96,7 +110,12 @@ export function SubscriptionForm({ className }: { className?: string }) {
           <Label htmlFor="subscription-company">Company</Label>
           <Input id="subscription-company" tabIndex={-1} autoComplete="off" {...register("company")} />
         </div>
-        <Button type="submit" size="lg" className="self-end" disabled={isPending}>
+        <Button
+          type="submit"
+          size="lg"
+          className={cn(layout === "stacked" ? "w-full" : "self-end")}
+          disabled={isPending}
+        >
           <MailCheck className="h-4 w-4" />
           {isPending ? "Submitting..." : "Subscribe"}
         </Button>

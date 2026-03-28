@@ -192,7 +192,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   </div>
 
                   <div className="rounded-[1.25rem] border border-white/10 bg-white/96 p-4">
-                    <SubscriptionForm />
+                    <SubscriptionForm layout="stacked" />
                   </div>
                 </div>
               </div>
