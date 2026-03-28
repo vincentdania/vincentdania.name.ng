@@ -609,10 +609,9 @@ export default async function HomePage() {
           <div className="mx-auto max-w-3xl space-y-8">
             <div className="flex justify-center">
               <span className="rounded-full border border-accent px-4 py-1 text-xs font-bold uppercase tracking-[0.22em] text-accent">
-                Global Availability
+                Available for opportunities
               </span>
             </div>
-            <h2 className={cn(notoSerif.className, "text-4xl")}>Open to High-Impact Opportunities.</h2>
             <div className="flex flex-wrap justify-center gap-8">
               <div className="flex items-center gap-2">
                 <Globe2 className="h-5 w-5 text-accent" />
@@ -621,6 +620,10 @@ export default async function HomePage() {
               <div className="flex items-center gap-2">
                 <MapPin className="h-5 w-5 text-accent" />
                 <span className="font-medium text-slate-300">Onsite</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Laptop2 className="h-5 w-5 text-accent" />
+                <span className="font-medium text-slate-300">Hybrid</span>
               </div>
               <div className="flex items-center gap-2">
                 <BriefcaseBusiness className="h-5 w-5 text-accent" />

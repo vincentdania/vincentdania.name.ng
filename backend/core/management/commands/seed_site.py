@@ -439,6 +439,7 @@ class Command(BaseCommand):
         opportunities = [
             "Remote jobs",
             "Onsite jobs",
+            "Hybrid roles",
             "Consulting roles",
             "Programme leadership roles",
             "Project management roles",
