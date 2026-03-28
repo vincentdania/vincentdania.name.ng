@@ -27,14 +27,9 @@ export function SiteNavbar({ siteName, cvUrl }: SiteNavbarProps) {
             <div className="flex h-11 w-11 items-center justify-center rounded-full bg-accent text-sm font-semibold text-white">
               VD
             </div>
-            <div>
-              <p className="font-display text-lg leading-none text-foreground">
-                {siteName}
-              </p>
-              <p className="mt-1 text-[0.68rem] uppercase tracking-[0.2em] text-muted">
-                Programme leadership & systems
-              </p>
-            </div>
+            <p className="font-display text-lg leading-none text-foreground">
+              {siteName}
+            </p>
           </Link>
           <div className="hidden gap-2 sm:flex">
             {cvUrl ? (
