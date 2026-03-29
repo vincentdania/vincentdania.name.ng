@@ -206,7 +206,7 @@ export default async function HomePage() {
           <div className="space-y-8 lg:col-span-7">
             <div className="inline-flex items-center space-x-2 rounded-full bg-teal-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-[#0f766e]">
               <span className="h-2 w-2 rounded-full bg-accent" />
-              <span>Global Impact & Systems Design</span>
+              <span>At the Intersection of Technology, Programmes & Social Protection</span>
             </div>
 
             <h1
