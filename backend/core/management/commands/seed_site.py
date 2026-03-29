@@ -543,7 +543,7 @@ class Command(BaseCommand):
             },
             {
                 "name": "NextGen",
-                "short_description": "A modern web platform designed to present programmes, opportunities, and institutional positioning for an emerging brand.",
+                "short_description": "A digital infrastructure platform that enables Nigerian universities to deliver accredited degree programmes online to students anywhere in the world without expanding physical campuses.",
                 "long_description": (
                     "NextGen highlights Vincent's ability to shape a polished digital front door for organisations that need clarity, credibility, and a cleaner public presence. "
                     "The project reinforces his strength in turning institutional intent into usable web experiences."
