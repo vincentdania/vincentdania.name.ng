@@ -11,14 +11,12 @@ import {
   Building2,
   Download,
   Globe2,
-  GraduationCap,
   Landmark,
   Laptop2,
   MapPin,
   MessageCircleMore,
   ReceiptText,
   Send,
-  ShieldCheck,
   Users2,
 } from "lucide-react";
 
@@ -302,20 +300,23 @@ export default async function HomePage() {
                 {
                   icon: Building2,
                   value: "$2M+",
-                  label: "Donor-Funded Portfolios",
+                  label: "Programmes Delivered Across Donor-Funded Initiatives",
                   borderClass: "border-accent",
+                  valueClass: "text-3xl",
                 },
                 {
-                  icon: GraduationCap,
+                  icon: Laptop2,
                   value: "8,000+",
-                  label: "Learners Managed (LMS)",
+                  label: "Learners Reached Through Digital Platforms I Designed",
                   borderClass: "border-accent/60",
+                  valueClass: "text-3xl",
                 },
                 {
-                  icon: ShieldCheck,
-                  value: "5,000+",
-                  label: "Successful Completions",
+                  icon: Globe2,
+                  value: "6 Geopolitical Zones + The Gambia",
+                  label: "Programmes Delivered Across Nigeria and West Africa",
                   borderClass: "border-accent/30",
+                  valueClass: "text-[1.75rem] leading-tight",
                 },
               ].map((metric) => {
                 const Icon = metric.icon;
@@ -326,13 +327,19 @@ export default async function HomePage() {
                       "flex flex-col justify-between rounded-xl border-b-4 bg-[#f9fafb] p-8 transition-transform hover:-translate-y-1",
                       metric.borderClass,
                     )}
-                  >
+                    >
                     <Icon className="mb-4 h-10 w-10 text-accent" />
                     <div>
-                      <div className={cn(notoSerif.className, "mb-1 text-3xl font-bold text-slate-900")}>
+                      <div
+                        className={cn(
+                          notoSerif.className,
+                          "mb-2 font-bold text-slate-900",
+                          metric.valueClass,
+                        )}
+                      >
                         {metric.value}
                       </div>
-                      <p className="text-sm font-medium uppercase tracking-[0.16em] text-slate-500">
+                      <p className="text-sm font-semibold leading-6 text-slate-500">
                         {metric.label}
                       </p>
                     </div>
