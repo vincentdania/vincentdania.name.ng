@@ -281,17 +281,18 @@ export default async function HomePage() {
 
               <div className="space-y-8 text-lg leading-relaxed text-slate-500">
                 <p>
-                  With over <span className="font-bold text-accent">14 years of professional trajectory</span>, I
-                  have dedicated my career to the intersection of digital transformation and
-                  international development. My work bridges the gap between complex donor
-                  mandates and ground-level execution.
+                  With over <span className="font-bold text-accent">14 years of experience</span>, I&apos;ve built my
+                  work around a simple focus: making programmes work better for people. I
+                  operate at the intersection of technology, programme delivery, and social
+                  protection, connecting strategy to execution and ensuring ideas translate
+                  into results on the ground.
                 </p>
                 <p>
-                  I specialize in <span className="font-bold text-accent">IT-enabled systems thinking</span>,
-                  leveraging data and scalable platforms to maximize program efficiency. From
-                  managing multi-million dollar donor portfolios to building custom enterprise
-                  tools, my approach is defined by intentionality, governance, and measurable
-                  outcomes.
+                  I combine programme leadership with hands-on system building, using data,
+                  digital tools, and practical platforms to improve efficiency, strengthen
+                  accountability, and scale impact. From managing large donor-funded programmes
+                  to building real-world digital solutions, my focus is always the same:
+                  deliver value, reduce waste, and reach those who need it most.
                 </p>
               </div>
             </div>
