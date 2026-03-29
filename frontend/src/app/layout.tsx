@@ -26,13 +26,13 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(absoluteUrl()),
   title: {
-    default: "Vincent Dania | Programme Leadership, IT & Thought Leadership",
+    default: "Vincent Dania | Programme Leadership, IT & Social Protection",
     template: "%s | Vincent Dania",
   },
   description:
     "Senior programme and project manager, IT professional, digital builder, and thought leader working across donor-funded delivery, governance, and technology.",
   openGraph: {
-    title: "Vincent Dania | Programme Leadership, IT & Thought Leadership",
+    title: "Vincent Dania | Programme Leadership, IT & Social Protection",
     description:
       "Portfolio and articles for Vincent Dania, a senior programme and project leader with strong digital and policy fluency.",
     url: absoluteUrl(),
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Vincent Dania | Programme Leadership, IT & Thought Leadership",
+    title: "Vincent Dania | Programme Leadership, IT & Social Protection",
     description:
       "Portfolio and articles for Vincent Dania, a senior programme and project leader with strong digital and policy fluency.",
     images: [absoluteUrl("/og-default.svg")],

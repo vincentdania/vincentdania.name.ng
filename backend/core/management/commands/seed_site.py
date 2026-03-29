@@ -64,7 +64,7 @@ class Command(BaseCommand):
             "and advisory work that require execution discipline, governance literacy, and technology fluency."
         )
         settings.footer_note = "Programme leadership, institutional strengthening, and digital systems for measurable social impact."
-        settings.meta_title = "Vincent Dania | Programme Leadership, IT & Thought Leadership"
+        settings.meta_title = "Vincent Dania | Programme Leadership, IT & Social Protection"
         settings.meta_description = (
             "Portfolio and articles for Vincent Dania, a senior programme and project manager, IT professional, "
             "digital builder, and thought leader in governance, technology, and social impact."
