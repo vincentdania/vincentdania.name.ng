@@ -516,32 +516,6 @@ class Command(BaseCommand):
                 "role_label": "Builder / Mission-driven technologist",
             },
             {
-                "name": "Host Communities",
-                "short_description": "A reporting and visibility platform built to support accountability, documentation, and engagement for host communities.",
-                "long_description": (
-                    "Host Communities extends Vincent's governance and accountability work into digital infrastructure. "
-                    "The platform is positioned to make community reporting, visibility, and institutional follow-through more structured and usable."
-                ),
-                "live_url": "https://hostcommunities.ng/",
-                "display_order": 6,
-                "category": Project.CATEGORY_NONPROFIT,
-                "tech_stack": "Accountability platform, Reporting workflows, Governance technology",
-                "role_label": "Builder / Governance systems",
-            },
-            {
-                "name": "Male Feminists Network",
-                "short_description": "A movement platform supporting advocacy, public engagement, and national visibility for men as allies in GBV prevention.",
-                "long_description": (
-                    "The Male Feminists Network platform complements programme delivery with a clearer digital presence for advocacy, engagement, and movement-building. "
-                    "It reflects Vincent's ability to connect social impact strategy with practical digital execution."
-                ),
-                "live_url": "https://mfn.centrelsd.org/",
-                "display_order": 7,
-                "category": Project.CATEGORY_NONPROFIT,
-                "tech_stack": "Advocacy platform, Movement communications, Front-end delivery",
-                "role_label": "Builder / Programme technologist",
-            },
-            {
                 "name": "NextGen",
                 "short_description": "A digital infrastructure platform that enables Nigerian universities to deliver accredited degree programmes online to students anywhere in the world without expanding physical campuses.",
                 "long_description": (
@@ -549,7 +523,7 @@ class Command(BaseCommand):
                     "The project reinforces his strength in turning institutional intent into usable web experiences."
                 ),
                 "live_url": "https://nextgen.com.ng/",
-                "display_order": 8,
+                "display_order": 6,
                 "category": Project.CATEGORY_CORPORATE,
                 "tech_stack": "Web strategy, Content structure, Brand-aligned delivery",
                 "role_label": "Builder / Digital strategist",
@@ -561,6 +535,8 @@ class Command(BaseCommand):
                 name=item["name"],
                 defaults={**item, "featured": True},
             )
+
+        Project.objects.filter(name__in=["Host Communities", "Male Feminists Network"]).delete()
 
     def seed_articles(self):
         categories = {
