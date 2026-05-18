@@ -6,14 +6,14 @@ import type { ArticlePreview } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 
 function getArticleKicker(article: ArticlePreview) {
-  return article.categories[0]?.name || article.tags[0]?.name || "Article";
+  return article.categories[0]?.name || article.tags[0]?.name || "Blog post";
 }
 
 export function ArticleCard({ article }: { article: ArticlePreview }) {
   const primaryCategory = getArticleKicker(article);
 
   return (
-    <Link href={`/articles/${article.slug}`} className="group block h-full">
+    <Link href={`/blog/${article.slug}`} className="group block h-full">
       <article className="flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-border/70 bg-white shadow-[0_14px_30px_rgba(42,42,42,0.04)] transition-transform duration-200 group-hover:-translate-y-1">
         <div className="relative min-h-[14rem] bg-surface-strong">
           {article.cover_image_url ? (
@@ -51,7 +51,7 @@ export function ArticleCard({ article }: { article: ArticlePreview }) {
               <span>{article.reading_time_minutes} min read</span>
             </div>
             <span className="inline-flex items-center gap-2 text-foreground transition-colors group-hover:text-accent">
-              Read article
+              Read post
               <ArrowRight className="h-4 w-4" />
             </span>
           </div>

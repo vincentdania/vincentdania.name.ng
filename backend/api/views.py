@@ -1,4 +1,4 @@
-from django.db.models import Prefetch
+from django.http import HttpResponse
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -7,22 +7,26 @@ from rest_framework.views import APIView
 
 from content.models import Article, Project
 from core.models import (
+    BlogSettings,
     Certification,
     CredibilityStat,
     EducationCredential,
     Experience,
     ExpertiseCategory,
     ImpactMetric,
+    NavigationItem,
     Opportunity,
     ProfileContent,
     SiteSettings,
     SocialLink,
 )
 from engagement.models import ContactMessage, Subscriber
+from engagement.services import send_contact_message_notification
 
 from .serializers import (
     ArticleDetailSerializer,
     ArticleListSerializer,
+    BlogSettingsSerializer,
     CertificationSerializer,
     ContactMessageCreateSerializer,
     CredibilityStatSerializer,
@@ -30,6 +34,7 @@ from .serializers import (
     ExperienceSerializer,
     ExpertiseCategorySerializer,
     ImpactMetricSerializer,
+    NavigationItemSerializer,
     OpportunitySerializer,
     ProfileContentSerializer,
     ProjectSerializer,
@@ -67,6 +72,8 @@ class PublicSiteView(APIView):
         payload = {
             "site_settings": SiteSettingsSerializer(SiteSettings.load(), context={"request": request}).data,
             "profile": ProfileContentSerializer(ProfileContent.load()).data,
+            "blog_settings": BlogSettingsSerializer(BlogSettings.load()).data,
+            "navigation_items": NavigationItemSerializer(NavigationItem.objects.filter(visible=True), many=True).data,
             "credibility_stats": CredibilityStatSerializer(CredibilityStat.objects.all(), many=True).data,
             "impact_metrics": ImpactMetricSerializer(ImpactMetric.objects.all(), many=True).data,
             "experiences": ExperienceSerializer(Experience.objects.filter(featured=True), many=True).data,
@@ -170,10 +177,30 @@ class SubscriberCreateView(generics.CreateAPIView):
         serializer.save()
         return Response(
             {
-                "detail": "Subscription received. You are on the list for new articles.",
-                "double_opt_in_ready": True,
+                "detail": "Subscription received. You are on the list for new posts and updates.",
             },
             status=status.HTTP_201_CREATED,
+        )
+
+
+class SubscriberUnsubscribeView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, token):
+        subscriber = Subscriber.objects.filter(confirmation_token=token).first()
+
+        if not subscriber:
+            return HttpResponse(
+                "<h1>Subscription not found</h1><p>This unsubscribe link is invalid or has already been used.</p>",
+                status=404,
+            )
+
+        if subscriber.is_active:
+            subscriber.is_active = False
+            subscriber.save(update_fields=["is_active", "updated_at"])
+
+        return HttpResponse(
+            "<h1>You have been unsubscribed</h1><p>You will no longer receive blog updates or email campaigns from this site.</p>"
         )
 
 
@@ -186,10 +213,29 @@ class ContactMessageCreateView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        message = serializer.save()
+        recipient_email = (
+            "Vincent@hyrax.ng"
+            if request.data.get("source") == "consultation"
+            else None
+        )
+        notification_sent = False
+        try:
+            notification_sent = send_contact_message_notification(
+                message,
+                recipient_email=recipient_email,
+            )
+        except Exception:
+            notification_sent = False
+        detail = (
+            "Message received. Vincent has been notified directly."
+            if notification_sent
+            else "Message received. Vincent can follow up from the admin console."
+        )
         return Response(
             {
-                "detail": "Message received. Vincent will be able to follow up from the admin console or future email automation.",
+                "detail": detail,
+                "notification_sent": notification_sent,
             },
             status=status.HTTP_201_CREATED,
         )

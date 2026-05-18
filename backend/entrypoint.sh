@@ -21,7 +21,10 @@ PY
 
 python manage.py migrate --noinput
 python manage.py collectstatic --noinput
-python manage.py seed_site
+
+if [ "${DJANGO_RUN_SEED_SITE:-false}" = "true" ]; then
+  python manage.py seed_site
+fi
 
 python - <<'PY'
 import os

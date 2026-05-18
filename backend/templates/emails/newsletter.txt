@@ -1,0 +1,9 @@
+{{ heading }}
+
+{% if intro %}{{ intro }}
+
+{% endif %}{% if body_text %}{{ body_text }}
+
+{% endif %}{% if cta_url and cta_label %}{{ cta_label }}: {{ cta_url }}
+
+{% endif %}Manage subscription: {{ unsubscribe_url }}

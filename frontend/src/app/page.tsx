@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Noto_Serif } from "next/font/google";
@@ -8,7 +9,6 @@ import {
   BarChart3,
   BrainCircuit,
   BriefcaseBusiness,
-  Building2,
   Download,
   Globe2,
   Landmark,
@@ -22,20 +22,25 @@ import {
 
 import { fetchSitePayload } from "@/lib/api";
 import type { ArticlePreview, Experience, ExpertiseCategory, Project } from "@/lib/types";
+import { MetricIcon } from "@/components/sections/metric-icon";
 import { absoluteUrl, cn } from "@/lib/utils";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteNavbar } from "@/components/layout/site-navbar";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "About Vincent",
-  description:
-    "Senior programme and project leader, IT professional, and digital builder with 14+ years of experience in donor-funded delivery and technology-enabled social impact.",
-  alternates: {
-    canonical: absoluteUrl("/"),
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const data = await fetchSitePayload().catch(() => null);
+  const settings = data?.site_settings;
+
+  return {
+    title: settings?.meta_title || settings?.site_name || "About Vincent",
+    description: settings?.meta_description || settings?.site_description,
+    alternates: {
+      canonical: absoluteUrl("/"),
+    },
+  };
+}
 
 const notoSerif = Noto_Serif({
   subsets: ["latin"],
@@ -71,10 +76,10 @@ function getProductVisual(project: Project, index: number) {
 
 function getExperienceHighlights(experiences: Experience[]) {
   const preferredTitles = [
+    "CEO",
     "Programme Coordinator - Male Feminists Network",
     "Programme Coordinator - BUILD Grant & Side by Side Movement",
     "Programme & Information Technology Officer",
-    "Adjunct Instructor (Programming Fundamentals - Python)",
   ];
 
   const selected = preferredTitles
@@ -86,6 +91,10 @@ function getExperienceHighlights(experiences: Experience[]) {
 
 function getExperienceKicker(experience: Experience) {
   const title = experience.title.toLowerCase();
+  const organization = experience.organization.toLowerCase();
+  if (title.includes("ceo") || organization.includes("hyrax")) {
+    return "AI Enablement & Digital Venture Leadership";
+  }
   if (title.includes("male feminists") || title.includes("build grant")) {
     return "Programme Leadership & Delivery";
   }
@@ -162,6 +171,18 @@ function getArticleKicker(article: ArticlePreview) {
   return article.categories[0]?.name || article.tags[0]?.name || "Thought Leadership";
 }
 
+function splitCredibilityStat(label: string | undefined) {
+  if (!label) {
+    return { value: "15+", label: "Years Experience" };
+  }
+
+  const [value, ...rest] = label.split(" ");
+  return {
+    value,
+    label: rest.join(" ") || label,
+  };
+}
+
 export default async function HomePage() {
   const data = await fetchSitePayload();
   const { profile, site_settings: settings } = data;
@@ -172,6 +193,8 @@ export default async function HomePage() {
     data.featured_article,
     data.recent_articles,
   );
+  const aboutMetrics = data.impact_metrics.slice(0, 3);
+  const leadingStat = splitCredibilityStat(data.credibility_stats[0]?.label);
 
   const personSchema = {
     "@context": "https://schema.org",
@@ -192,7 +215,14 @@ export default async function HomePage() {
 
   return (
     <>
-      <SiteNavbar siteName={settings.site_name} cvUrl={settings.cv_file_url} />
+      <SiteNavbar
+        siteName={settings.site_name}
+        navigationItems={data.navigation_items}
+        cvUrl={settings.cv_file_url}
+        cvLabel={settings.navbar_cv_label}
+        primaryCtaLabel={settings.navbar_contact_label}
+        primaryCtaLink={settings.navbar_contact_link}
+      />
 
       <main className="bg-[#f9fafb] pt-24 text-slate-900">
         <script
@@ -204,7 +234,7 @@ export default async function HomePage() {
           <div className="space-y-8 lg:col-span-7">
             <div className="inline-flex items-center space-x-2 rounded-full bg-teal-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.22em] text-[#0f766e]">
               <span className="h-2 w-2 rounded-full bg-accent" />
-              <span>At the Intersection of Technology, Programmes & Social Protection</span>
+              <span>{profile.hero_eyebrow}</span>
             </div>
 
             <h1
@@ -223,16 +253,16 @@ export default async function HomePage() {
             <div className="flex flex-wrap gap-4 pt-2">
               <a
                 className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-4 font-bold text-white transition-all hover:bg-accent-strong sm:px-8"
-                href="#contact"
+                href={settings.hero_primary_cta_link}
               >
-                Work with Vincent
+                {settings.hero_primary_cta_label}
                 <ArrowRight className="h-4 w-4" />
               </a>
               <a
                 className="inline-flex rounded-lg border border-slate-200 bg-white px-6 py-4 font-bold text-slate-900 transition-all hover:bg-slate-100 sm:px-8"
-                href="#tech"
+                href={settings.hero_secondary_cta_link}
               >
-                View Portfolio
+                {settings.hero_secondary_cta_label}
               </a>
             </div>
           </div>
@@ -243,7 +273,7 @@ export default async function HomePage() {
               {settings.portrait_image_url ? (
                 <Image
                   src={settings.portrait_image_url}
-                  alt="Vincent Dania professional portrait"
+                  alt={`${settings.site_name} professional portrait`}
                   fill
                   className="object-cover"
                   sizes="(min-width: 1024px) 32rem, 100vw"
@@ -252,16 +282,18 @@ export default async function HomePage() {
               ) : (
                 <div className="flex h-full items-center justify-center bg-slate-200">
                   <p className={cn(notoSerif.className, "text-4xl text-slate-700")}>
-                    Vincent Dania
+                    {settings.site_name}
                   </p>
                 </div>
               )}
             </div>
 
             <div className="absolute -bottom-6 left-0 hidden rounded-lg bg-white p-5 shadow-xl md:block lg:-left-6">
-              <div className={cn(notoSerif.className, "text-4xl font-bold text-accent")}>14+</div>
+              <div className={cn(notoSerif.className, "text-4xl font-bold text-accent")}>
+                {leadingStat.value}
+              </div>
               <div className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-slate-500">
-                Years Experience
+                {leadingStat.label}
               </div>
             </div>
           </div>
@@ -272,71 +304,32 @@ export default async function HomePage() {
             <div className="grid items-start gap-16 lg:grid-cols-2">
               <div className="space-y-6">
                 <h2 className={cn(notoSerif.className, "text-4xl text-slate-900")}>
-                  Turning strategy into systems that deliver results.
+                  {profile.about_title}
                 </h2>
                 <div className="h-1 w-24 bg-accent" />
               </div>
 
               <div className="space-y-8 text-lg leading-relaxed text-slate-500">
-                <p>
-                  With over <span className="font-bold text-accent">14 years of experience</span>, I&apos;ve built my
-                  work around a simple focus: making programmes work better for people. I
-                  operate at the intersection of technology, programme delivery, and social
-                  protection, connecting strategy to execution and ensuring ideas translate
-                  into results on the ground.
-                </p>
-                <p>
-                  I combine programme leadership with hands-on system building, using data,
-                  digital tools, and practical platforms to improve efficiency, strengthen
-                  accountability, and scale impact. From managing large donor-funded programmes
-                  to building real-world digital solutions, my focus is always the same:
-                  deliver value, reduce waste, and reach those who need it most.
-                </p>
+                {profile.about_paragraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
               </div>
             </div>
 
             <div className="mt-20 grid gap-8 md:grid-cols-3">
-              {[
-                {
-                  icon: Building2,
-                  value: "$2M+",
-                  label: "Programmes Delivered Across Donor-Funded Initiatives",
-                  borderClass: "border-accent",
-                  valueClass: "text-3xl",
-                },
-                {
-                  icon: Laptop2,
-                  value: "8,000+",
-                  label: "Learners Reached Through Digital Platforms I Designed",
-                  borderClass: "border-accent/60",
-                  valueClass: "text-3xl",
-                },
-                {
-                  icon: Globe2,
-                  value: "6 Geopolitical Zones + The Gambia",
-                  label: "Programmes Delivered Across Nigeria and West Africa",
-                  borderClass: "border-accent/30",
-                  valueClass: "text-[1.75rem] leading-tight",
-                },
-              ].map((metric) => {
-                const Icon = metric.icon;
+              {aboutMetrics.map((metric, index) => {
+                const borderClasses = ["border-accent", "border-accent/60", "border-accent/30"];
                 return (
                   <div
                     key={metric.label}
                     className={cn(
                       "flex flex-col justify-between rounded-xl border-b-4 bg-[#f9fafb] p-8 transition-transform hover:-translate-y-1",
-                      metric.borderClass,
+                      borderClasses[index % borderClasses.length],
                     )}
-                    >
-                    <Icon className="mb-4 h-10 w-10 text-accent" />
+                  >
+                    <MetricIcon name={metric.icon} className="mb-4 h-10 w-10 text-accent" />
                     <div>
-                      <div
-                        className={cn(
-                          notoSerif.className,
-                          "mb-2 font-bold text-slate-900",
-                          metric.valueClass,
-                        )}
-                      >
+                      <div className={cn(notoSerif.className, "mb-2 text-3xl font-bold text-slate-900")}>
                         {metric.value}
                       </div>
                       <p className="text-sm font-semibold leading-6 text-slate-500">
@@ -405,11 +398,10 @@ export default async function HomePage() {
             <div className="mb-16 flex flex-col justify-between gap-8 md:flex-row md:items-end">
               <div>
                 <h2 className={cn(notoSerif.className, "mb-4 text-4xl text-white")}>
-                  The Builder Portfolio
+                  {profile.builder_title}
                 </h2>
                 <p className="max-w-xl text-slate-400">
-                  A portfolio of purpose-built digital solutions addressing complex organisational
-                  and educational challenges.
+                  {profile.builder_intro}
                 </p>
               </div>
               <a
@@ -463,10 +455,11 @@ export default async function HomePage() {
 
         <section className="mx-auto grid max-w-7xl gap-16 px-5 py-24 lg:grid-cols-12 sm:px-8">
           <div className="space-y-4 lg:col-span-4">
-            <h2 className={cn(notoSerif.className, "text-4xl text-slate-900")}>Core Competencies</h2>
+            <h2 className={cn(notoSerif.className, "text-4xl text-slate-900")}>
+              {profile.expertise_title}
+            </h2>
             <p className="leading-relaxed text-slate-500">
-              A multidimensional skill set honed through high-stakes project delivery, academic
-              rigor, and hands-on technology building.
+              {profile.expertise_intro}
             </p>
           </div>
 
@@ -499,8 +492,11 @@ export default async function HomePage() {
           <div className="mx-auto flex max-w-7xl flex-col gap-16 md:flex-row">
             <div className="flex-1 space-y-8">
               <h3 className={cn(notoSerif.className, "border-l-4 border-accent pl-6 text-2xl text-slate-900")}>
-                Academic Excellence
+                {profile.education_title}
               </h3>
+              <p className="max-w-xl text-sm leading-7 text-slate-500">
+                {profile.education_intro}
+              </p>
               <div className="space-y-8">
                 {data.education.slice(0, 3).map((credential) => (
                   <div key={credential.title}>
@@ -550,22 +546,22 @@ export default async function HomePage() {
           <div className="mb-12 flex items-end justify-between gap-8">
             <div>
               <h2 className={cn(notoSerif.className, "mb-2 text-4xl text-slate-900")}>
-                Thought Leadership
+                {profile.thought_leadership_title}
               </h2>
-              <p className="text-slate-500">Selected writings on policy and program management.</p>
+              <p className="text-slate-500">{profile.thought_leadership_intro}</p>
             </div>
             <Link
-              href="/articles"
+              href="/blog"
               className="group inline-flex items-center gap-1 font-bold text-accent"
             >
-              Full Archive
+              {data.blog_settings.archive_link_label}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
 
           <div className="grid gap-8 md:grid-cols-2">
             {thoughtLeadershipArticles.map((article, index) => (
-              <Link key={article.slug} href={`/articles/${article.slug}`} className="group block">
+              <Link key={article.slug} href={`/blog/${article.slug}`} className="group block">
                 <article>
                   <div className="relative mb-6 aspect-video overflow-hidden rounded-xl bg-slate-200">
                     {article.cover_image_url ? (
@@ -617,26 +613,21 @@ export default async function HomePage() {
           <div className="mx-auto max-w-3xl space-y-8">
             <div className="flex justify-center">
               <span className="rounded-full border border-accent px-4 py-1 text-xs font-bold uppercase tracking-[0.22em] text-accent">
-                Available for opportunities
+                {profile.opportunities_title}
               </span>
             </div>
+            <p className="text-base leading-8 text-slate-300">{profile.opportunities_copy}</p>
             <div className="flex flex-wrap justify-center gap-8">
-              <div className="flex items-center gap-2">
-                <Globe2 className="h-5 w-5 text-accent" />
-                <span className="font-medium text-slate-300">Remote</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="h-5 w-5 text-accent" />
-                <span className="font-medium text-slate-300">Onsite</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Laptop2 className="h-5 w-5 text-accent" />
-                <span className="font-medium text-slate-300">Hybrid</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <BriefcaseBusiness className="h-5 w-5 text-accent" />
-                <span className="font-medium text-slate-300">Advisory & Consulting</span>
-              </div>
+              {data.opportunities.slice(0, 4).map((opportunity, index) => {
+                const icons = [Globe2, MapPin, Laptop2, BriefcaseBusiness];
+                const Icon = icons[index % icons.length];
+                return (
+                  <div key={opportunity.title} className="flex items-center gap-2">
+                    <Icon className="h-5 w-5 text-accent" />
+                    <span className="font-medium text-slate-300">{opportunity.title}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -650,11 +641,10 @@ export default async function HomePage() {
             <div className="relative z-10 grid gap-16 lg:grid-cols-2 lg:items-center">
               <div className="space-y-8">
                 <h2 className={cn(notoSerif.className, "text-4xl text-slate-900 sm:text-5xl")}>
-                  Start a Conversation
+                  {profile.contact_title}
                 </h2>
                 <p className="max-w-md text-xl leading-relaxed text-slate-500">
-                  Whether it&apos;s AI, programme design and delivery, or capacity-building and
-                  training, I&apos;m available to explore how I can support your goals.
+                  {profile.contact_copy}
                 </p>
               </div>
 
@@ -664,7 +654,7 @@ export default async function HomePage() {
                   href={`mailto:${settings.public_email}`}
                 >
                   <Send className="h-5 w-5" />
-                  Send Email
+                  {settings.contact_email_button_label}
                 </a>
                 <a
                   className="flex w-full items-center justify-center gap-3 rounded-lg bg-[#25D366] py-5 text-center text-lg font-bold text-white shadow-lg shadow-[#25D366]/25 transition-all hover:bg-[#1ebe5d]"
@@ -673,7 +663,7 @@ export default async function HomePage() {
                   rel="noreferrer"
                 >
                   <MessageCircleMore className="h-5 w-5" />
-                  Chat on WhatsApp
+                  {settings.contact_whatsapp_button_label}
                 </a>
                 {settings.cv_file_url ? (
                   <a
@@ -683,7 +673,7 @@ export default async function HomePage() {
                     rel="noreferrer"
                   >
                     <Download className="h-5 w-5" />
-                    Download Full CV
+                    {settings.contact_cv_button_label}
                   </a>
                 ) : null}
               </div>

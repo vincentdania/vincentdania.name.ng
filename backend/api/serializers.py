@@ -5,12 +5,14 @@ from rest_framework import serializers
 
 from content.models import Article, Project
 from core.models import (
+    BlogSettings,
     Certification,
     CredibilityStat,
     EducationCredential,
     Experience,
     ExpertiseCategory,
     ImpactMetric,
+    NavigationItem,
     Opportunity,
     ProfileContent,
     SiteSettings,
@@ -50,6 +52,17 @@ class SiteSettingsSerializer(serializers.ModelSerializer):
             "linkedin_url",
             "contact_intro",
             "footer_note",
+            "hero_primary_cta_label",
+            "hero_primary_cta_link",
+            "hero_secondary_cta_label",
+            "hero_secondary_cta_link",
+            "navbar_contact_label",
+            "navbar_contact_link",
+            "navbar_cv_label",
+            "contact_email_button_label",
+            "contact_whatsapp_button_label",
+            "contact_cv_button_label",
+            "footer_copyright",
             "meta_title",
             "meta_description",
             "cv_file_url",
@@ -91,6 +104,29 @@ class ProfileContentSerializer(serializers.ModelSerializer):
 
     def get_about_paragraphs(self, obj):
         return [item.strip() for item in obj.about_body.split("\n\n") if item.strip()]
+
+
+class BlogSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BlogSettings
+        fields = [
+            "index_badge_label",
+            "index_title",
+            "index_intro",
+            "featured_badge_label",
+            "featured_fallback_title",
+            "archive_eyebrow",
+            "archive_title",
+            "archive_intro",
+            "archive_link_label",
+            "subscribe_badge_label",
+            "subscribe_title",
+            "subscribe_description",
+            "detail_back_label",
+            "detail_meta_heading",
+            "meta_title",
+            "meta_description",
+        ]
 
 
 class CredibilityStatSerializer(serializers.ModelSerializer):
@@ -158,6 +194,12 @@ class SocialLinkSerializer(serializers.ModelSerializer):
         fields = ["platform", "label", "url", "order", "visible_in_footer"]
 
 
+class NavigationItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NavigationItem
+        fields = ["label", "href", "order", "visible", "open_in_new_tab"]
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     featured_image_url = serializers.SerializerMethodField()
     category_label = serializers.CharField(read_only=True)
@@ -215,12 +257,15 @@ class ArticleListSerializer(serializers.ModelSerializer):
 
 
 class ArticleDetailSerializer(ArticleListSerializer):
-    body = serializers.CharField()
+    body = serializers.SerializerMethodField()
     meta_title = serializers.CharField()
     meta_description = serializers.CharField()
 
     class Meta(ArticleListSerializer.Meta):
         fields = ArticleListSerializer.Meta.fields + ["body", "meta_title", "meta_description"]
+
+    def get_body(self, obj):
+        return obj.rendered_body
 
 
 class SubscriberCreateSerializer(serializers.Serializer):
@@ -246,7 +291,7 @@ class SubscriberCreateSerializer(serializers.Serializer):
         )
         if not created:
             subscriber.is_active = True
-            subscriber.save(update_fields=["is_active", "updated_at"])
+            subscriber.save(update_fields=["is_active", "confirmed_at", "updated_at"])
         return subscriber
 
 
@@ -255,6 +300,12 @@ class ContactMessageCreateSerializer(serializers.Serializer):
     email = serializers.EmailField()
     subject = serializers.CharField(max_length=180)
     message = serializers.CharField(min_length=20, max_length=4000)
+    budget = serializers.CharField(required=False, allow_blank=True, max_length=120, write_only=True)
+    preferred_date = serializers.DateField(required=False, write_only=True)
+    source = serializers.CharField(required=False, allow_blank=True, max_length=80, write_only=True)
+    captcha_left = serializers.IntegerField(required=False, write_only=True)
+    captcha_right = serializers.IntegerField(required=False, write_only=True)
+    captcha_answer = serializers.IntegerField(required=False, write_only=True)
     company = serializers.CharField(required=False, allow_blank=True, write_only=True)
 
     def validate_company(self, value):
@@ -262,6 +313,33 @@ class ContactMessageCreateSerializer(serializers.Serializer):
             raise serializers.ValidationError("Invalid submission.")
         return value
 
+    def validate(self, attrs):
+        source = attrs.get("source", "")
+        if source == "consultation":
+            captcha_fields = ("captcha_left", "captcha_right", "captcha_answer")
+            if any(field not in attrs for field in captcha_fields):
+                raise serializers.ValidationError({"captcha_answer": "Please complete the simple security question."})
+            if attrs["captcha_left"] + attrs["captcha_right"] != attrs["captcha_answer"]:
+                raise serializers.ValidationError({"captcha_answer": "That answer is not correct. Please try again."})
+        return attrs
+
     def create(self, validated_data):
         validated_data.pop("company", "")
+        budget = validated_data.pop("budget", "").strip()
+        preferred_date = validated_data.pop("preferred_date", None)
+        source = validated_data.pop("source", "").strip()
+        validated_data.pop("captcha_left", None)
+        validated_data.pop("captcha_right", None)
+        validated_data.pop("captcha_answer", None)
+
+        context_lines = []
+        if source:
+            context_lines.append(f"Source: {source}")
+        if budget and budget != "Select a range":
+            context_lines.append(f"Estimated budget: {budget}")
+        if preferred_date:
+            formatted_date = f"{preferred_date.strftime('%B')} {preferred_date.day}, {preferred_date.year}"
+            context_lines.append(f"Preferred consultation date: {formatted_date}")
+        if context_lines:
+            validated_data["message"] = f"{validated_data['message']}\n\n" + "\n".join(context_lines)
         return ContactMessage.objects.create(**validated_data)

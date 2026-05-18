@@ -121,7 +121,7 @@ export function SubscriptionForm({
         </Button>
       </div>
       <p className="text-sm leading-7 text-muted">
-        Receive new articles and occasional reflections on programme delivery, governance, and digital systems.
+        Receive new blog posts and occasional reflections on programme delivery, governance, and digital systems.
       </p>
       {serverMessage ? <p className="text-sm text-accent">{serverMessage}</p> : null}
     </form>

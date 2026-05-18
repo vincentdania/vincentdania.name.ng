@@ -8,12 +8,14 @@ from django.utils import timezone
 
 from content.models import Article, ArticleCategory, ArticleTag, Project
 from core.models import (
+    BlogSettings,
     Certification,
     CredibilityStat,
     EducationCredential,
     Experience,
     ExpertiseCategory,
     ImpactMetric,
+    NavigationItem,
     Opportunity,
     ProfileContent,
     SiteSettings,
@@ -32,6 +34,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("Seeding website content...")
         self.seed_settings_and_profile()
+        self.seed_navigation_and_blog()
         self.seed_social_links()
         self.seed_credibility_and_metrics()
         self.seed_experience()
@@ -64,10 +67,20 @@ class Command(BaseCommand):
             "and advisory work that require execution discipline, governance literacy, and technology fluency."
         )
         settings.footer_note = "Programme leadership, institutional strengthening, and digital systems for measurable social impact."
-        settings.meta_title = "Vincent Dania | Programme Leadership, IT & Social Protection"
+        settings.hero_primary_cta_label = "Work with Vincent"
+        settings.hero_primary_cta_link = "#contact"
+        settings.hero_secondary_cta_label = "View Portfolio"
+        settings.hero_secondary_cta_link = "#tech"
+        settings.navbar_contact_label = "Contact Me"
+        settings.navbar_contact_link = "/#contact"
+        settings.navbar_cv_label = "Download CV"
+        settings.contact_email_button_label = "Send Email"
+        settings.contact_whatsapp_button_label = "Chat on WhatsApp"
+        settings.contact_cv_button_label = "Download Full CV"
+        settings.footer_copyright = "Designed & developed by Vincent Dania. All rights reserved."
+        settings.meta_title = "Vincent Dania | AI Enablement, Programme Leadership & Social Impact"
         settings.meta_description = (
-            "Portfolio and articles for Vincent Dania, a senior programme and project manager, IT professional, "
-            "digital builder, and thought leader in governance, technology, and social impact."
+            "Portfolio and articles for Vincent Dania, CEO of Hyrax, IT professional, AI advisor, and social impact leader."
         )
         settings.save()
 
@@ -83,23 +96,22 @@ class Command(BaseCommand):
                 settings.cv_file.save(cv_path.name, File(cv_file), save=True)
 
         profile = ProfileContent.load()
-        profile.hero_eyebrow = "Senior Programme & Project Manager | IT Professional | Thought Leader"
-        profile.hero_title = "Designing systems that maximize value, eliminate waste, and reach the farthest behind."
+        profile.hero_eyebrow = "CEO, Hyrax | AI Enablement Leader | IT Professional"
+        profile.hero_title = "Building AI-enabled systems, social impact programmes, and digital products that create practical value."
         profile.hero_subtitle = (
-            "Vincent Dania is a programme and technology leader delivering social impact programmes, "
-            "strengthening institutions, and building digital systems that improve efficiency, "
-            "accountability, and outcomes."
+            "Vincent Dania is an AI enablement leader, technology builder, and social impact executive working across "
+            "practical AI adoption, digital commerce, maternal and infant health, economic opportunity, and institutional delivery."
         )
         profile.about_title = "Turning strategy into systems that deliver results."
         profile.about_body = (
-            "Vincent Dania is a senior programme and project leader with more than 14 years of experience delivering "
-            "donor-funded initiatives across governance, gender justice, education, social protection, and extractive-sector accountability.\n\n"
-            "His track record spans grant management, donor compliance, cross-sector partnership coordination, "
-            "monitoring, evaluation and learning, and nationally scaled implementation across Nigeria. He has worked "
-            "with foundations, multilateral partners, civil society organisations, community actors, and public institutions.\n\n"
-            "Alongside this development leadership work, Vincent is also a hands-on IT professional and digital builder. "
-            "With a Master's degree in Information Technology, adjunct teaching experience in programming, and a portfolio "
-            "of live digital products, he brings rare fluency between strategy, systems, and execution."
+            "Vincent Dania is CEO of Hyrax, positioned as The AI Enablement Company. "
+            "His work sits at the intersection of practical technology adoption, digital operations, social impact, and human development.\n\n"
+            "Hyrax.ng currently presents a fast, trusted Abuja digital marketplace built around genuine products, verified stock, digital offers, clear support, and convenient web or WhatsApp ordering. "
+            "That operating experience strengthens Vincent's AI enablement work with direct exposure to real customer journeys, commerce workflows, product operations, and small business productivity needs.\n\n"
+            "Patience Gbenga Foundation works to end preventable maternal and infant deaths while expanding economic opportunity for vulnerable women and families in Nigeria. "
+            "Its model combines community-led care, health system strengthening, digital innovation, maternal risk identification, practical family support, and income recovery pathways.\n\n"
+            "Vincent also brings more than 15 years of IT education experience, donor-funded programme leadership, project management discipline, and hands-on digital product delivery. "
+            "He has worked with foundations, multilateral partners, civil society organisations, community actors, public institutions, learners, and builders to turn ideas into systems people can use."
         )
         profile.builder_title = "The Builder Portfolio"
         profile.builder_intro = (
@@ -133,6 +145,60 @@ class Command(BaseCommand):
         )
         profile.save()
 
+    def seed_navigation_and_blog(self):
+        items = [
+            ("About Vincent", "/#about", 1),
+            ("Experience", "/#experience", 2),
+            ("Portfolio", "/#tech", 3),
+            ("Blog", "/blog", 4),
+            ("PhD Research", "/phd", 5),
+            ("AI Consultation", "/consult", 6),
+        ]
+        for label, href, order in items:
+            NavigationItem.objects.update_or_create(
+                label=label,
+                defaults={
+                    "href": href,
+                    "order": order,
+                    "visible": True,
+                    "open_in_new_tab": False,
+                },
+            )
+
+        blog = BlogSettings.load()
+        blog.index_badge_label = "Blog"
+        blog.index_title = "Writing on institutions, delivery, policy, and digital systems."
+        blog.index_intro = (
+            "A curated archive of essays, practical reflections, and research-led thinking "
+            "grounded in programme implementation, public value, and technology-enabled systems change."
+        )
+        blog.featured_badge_label = "Featured post"
+        blog.featured_fallback_title = "Practical thinking for systems that serve people well."
+        blog.archive_eyebrow = "Archive"
+        blog.archive_title = (
+            "Explore perspectives on governance, institutional effectiveness, social protection, "
+            "and digital execution."
+        )
+        blog.archive_intro = (
+            "Search by topic, filter the archive, and move from strategic reflections to "
+            "implementation lessons with a more editorial reading experience."
+        )
+        blog.archive_link_label = "Full archive"
+        blog.subscribe_badge_label = "Subscribe"
+        blog.subscribe_title = "Receive new essays directly."
+        blog.subscribe_description = (
+            "Join the list for practical reflections on programme leadership, policy, "
+            "institutional performance, and digital systems that create measurable value."
+        )
+        blog.detail_back_label = "Back to blog"
+        blog.detail_meta_heading = "Post details"
+        blog.meta_title = "Vincent Dania Blog | Policy, Delivery & Digital Systems"
+        blog.meta_description = (
+            "Blog posts and essays by Vincent Dania on programme delivery, social protection, "
+            "institutional effectiveness, and digital systems."
+        )
+        blog.save()
+
     def seed_social_links(self):
         settings = SiteSettings.load()
         links = [
@@ -153,7 +219,7 @@ class Command(BaseCommand):
 
     def seed_credibility_and_metrics(self):
         credibility_items = [
-            "14+ Years Experience",
+            "15+ Years Experience",
             "Donor-Funded Programmes",
             "IT & Digital Products",
             "Open to Remote & Onsite Roles",
@@ -178,13 +244,46 @@ class Command(BaseCommand):
     def seed_experience(self):
         experiences = [
             {
+                "title": "CEO",
+                "organization": "Hyrax - The AI Enablement Company",
+                "location": "Abuja, Nigeria",
+                "employment_type": "Executive Leadership",
+                "start_date": date(2026, 5, 1),
+                "end_date": None,
+                "is_current": True,
+                "summary": "Leads Hyrax as an AI enablement company helping people and organisations translate technology into practical productivity, digital operations, and business value.",
+                "achievements": [
+                    "Hyrax.ng currently presents a trusted Abuja digital marketplace focused on genuine products, verified stock, digital offers, fast fulfilment, and convenient web or WhatsApp ordering.",
+                    "Uses direct marketplace and customer-support experience to ground AI advisory in real small-business workflows, commerce operations, and practical productivity needs.",
+                    "Shapes Hyrax around AI literacy, automation, digital product thinking, and accessible technology enablement for African businesses and institutions.",
+                ],
+                "order": 1,
+            },
+            {
+                "title": "Foundation Strategy & Digital Systems Lead",
+                "organization": "Patience Gbenga Foundation",
+                "location": "Abuja, Nigeria",
+                "employment_type": "Advisory & Systems Support",
+                "start_date": date(2022, 7, 1),
+                "end_date": None,
+                "is_current": False,
+                "summary": "Supported mission strategy and digital systems for a foundation working to end preventable maternal and infant deaths and expand economic opportunity for vulnerable women and families in Nigeria.",
+                "achievements": [
+                    "Contributed to an integrated model combining community-led care, health system strengthening, digital innovation, and practical family support.",
+                    "Helped shape platform content around mobile maternal care, maternal risk identification, referral coordination, memorial advocacy, and family recovery grants.",
+                    "Supported digital storytelling that connects safer motherhood, household stability, data-enabled care, and income recovery for vulnerable families.",
+                ],
+                "order": 2,
+                "featured": False,
+            },
+            {
                 "title": "Programme Coordinator - Male Feminists Network",
                 "organization": "African Centre for Leadership, Strategy & Development (Centre LSD)",
                 "location": "Abuja, Nigeria",
                 "employment_type": "Full-time",
                 "start_date": date(2025, 5, 1),
-                "end_date": None,
-                "is_current": True,
+                "end_date": date(2026, 5, 31),
+                "is_current": False,
                 "summary": "Leads the national rollout of a Ford Foundation-funded programme mobilising men as allies for GBV prevention across all six geopolitical zones of Nigeria.",
                 "achievements": [
                     "Coordinates a cross-functional team spanning programme, MEL, media, and administration.",
@@ -192,7 +291,7 @@ class Command(BaseCommand):
                     "Leads donor compliance, budgeting, and reporting for a $1M grant while maintaining disciplined budget performance.",
                     "Strengthens accountability through structured workplans, learning loops, and stakeholder review forums.",
                 ],
-                "order": 1,
+                "order": 3,
             },
             {
                 "title": "Programme Coordinator - BUILD Grant & Side by Side Movement",
@@ -210,7 +309,7 @@ class Command(BaseCommand):
                     "Conceptualized and led development of a national digital reporting platform for mining host communities and managed software developers from requirements to deployment.",
                     "Provided technical leadership for revisions to CDA Guidelines, advancing inclusion provisions for women, youth, and persons with disabilities.",
                 ],
-                "order": 2,
+                "order": 4,
             },
             {
                 "title": "Senior Program Officer",
@@ -227,7 +326,7 @@ class Command(BaseCommand):
                     "Served as MEL lead for the Christian Aid Voices to the People Charter initiative across 12+ communities.",
                     "Oversaw C-CAGE implementation in vulnerable communities in Adamawa State, contributing to 3,265 girls' enrolment into formal education.",
                 ],
-                "order": 3,
+                "order": 5,
             },
             {
                 "title": "Programme & Information Technology Officer",
@@ -244,7 +343,7 @@ class Command(BaseCommand):
                     "Migrated the organisation to Microsoft 365 and secured an annual in-kind software grant valued at $3,600.",
                     "Standardised official email and shared repository use to improve information security and operational continuity.",
                 ],
-                "order": 4,
+                "order": 6,
             },
             {
                 "title": "Adjunct Instructor (Programming Fundamentals - Python)",
@@ -259,7 +358,7 @@ class Command(BaseCommand):
                     "Teaches Programming Fundamentals (Python) in a remote-first global learning environment.",
                     "Contributes to curriculum review and continuous improvement for learning effectiveness.",
                 ],
-                "order": 5,
+                "order": 7,
             },
             {
                 "title": "IT Specialist (Short-Term Consultancy)",
@@ -273,7 +372,7 @@ class Command(BaseCommand):
                 "achievements": [
                     "Reviewed usability, engagement quality, and data insights for a civic accountability application.",
                 ],
-                "order": 6,
+                "order": 8,
             },
             {
                 "title": "Operations Manager",
@@ -287,7 +386,7 @@ class Command(BaseCommand):
                 "achievements": [
                     "Streamlined operations and coordinated resources for service reliability.",
                 ],
-                "order": 7,
+                "order": 9,
             },
             {
                 "title": "Programme Officer",
@@ -301,7 +400,7 @@ class Command(BaseCommand):
                 "achievements": [
                     "Supported health education, counselling, and programme monitoring in community settings.",
                 ],
-                "order": 8,
+                "order": 10,
             },
         ]
 

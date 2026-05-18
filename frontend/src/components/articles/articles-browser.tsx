@@ -54,7 +54,7 @@ export function ArticlesBrowser({ articles }: ArticlesBrowserProps) {
               htmlFor="article-search"
               className="block text-xs font-semibold uppercase tracking-[0.18em] text-muted"
             >
-              Search articles
+              Search posts
             </label>
             <div className="relative">
               <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
@@ -107,7 +107,7 @@ export function ArticlesBrowser({ articles }: ArticlesBrowserProps) {
         <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-border/70 pt-5 text-sm text-muted">
           <p>
             Showing <span className="font-medium text-foreground">{filteredArticles.length}</span>{" "}
-            article{filteredArticles.length === 1 ? "" : "s"}
+            post{filteredArticles.length === 1 ? "" : "s"}
             {activeCategory !== "all" ? " in the selected topic" : ""}
             {deferredSearch.trim() ? " matching your search" : ""}.
           </p>
@@ -128,12 +128,12 @@ export function ArticlesBrowser({ articles }: ArticlesBrowserProps) {
         </div>
       ) : (
         <div className="rounded-[1.6rem] border border-dashed border-border bg-white/70 p-10 text-center">
-          <p className="font-display text-3xl text-foreground">No articles matched that search.</p>
+          <p className="font-display text-3xl text-foreground">No posts matched that search.</p>
           <p className="mt-3 text-sm leading-7 text-muted">
             Try a broader keyword or return to all topics.
           </p>
           <Button type="button" variant="secondary" className="mt-6" onClick={resetFilters}>
-            Show all articles
+            Show all posts
           </Button>
         </div>
       )}

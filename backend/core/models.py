@@ -62,6 +62,21 @@ class SiteSettings(SingletonModel):
         max_length=160,
         default="African-rooted, globally relevant leadership across programmes, policy, and technology.",
     )
+    hero_primary_cta_label = models.CharField(max_length=80, default="Work with Vincent")
+    hero_primary_cta_link = models.CharField(max_length=255, default="#contact")
+    hero_secondary_cta_label = models.CharField(max_length=80, default="View Portfolio")
+    hero_secondary_cta_link = models.CharField(max_length=255, default="#tech")
+    navbar_contact_label = models.CharField(max_length=80, default="Contact Me")
+    navbar_contact_link = models.CharField(max_length=255, default="/#contact")
+    navbar_cv_label = models.CharField(max_length=80, default="Download CV")
+    contact_email_button_label = models.CharField(max_length=80, default="Send Email")
+    contact_whatsapp_button_label = models.CharField(max_length=80, default="Chat on WhatsApp")
+    contact_cv_button_label = models.CharField(max_length=80, default="Download Full CV")
+    footer_copyright = models.CharField(
+        max_length=255,
+        default="Designed & developed by Vincent Dania. All rights reserved.",
+        help_text="The current year is prepended automatically on the site footer.",
+    )
     meta_title = models.CharField(max_length=160, blank=True)
     meta_description = models.TextField(blank=True)
 
@@ -137,6 +152,59 @@ class ProfileContent(SingletonModel):
 
     def __str__(self):
         return "Profile content"
+
+
+class BlogSettings(SingletonModel):
+    index_badge_label = models.CharField(max_length=80, default="Blog")
+    index_title = models.CharField(
+        max_length=255,
+        default="Writing on institutions, delivery, policy, and digital systems.",
+    )
+    index_intro = models.TextField(
+        default=(
+            "A curated archive of essays, practical reflections, and research-led thinking "
+            "grounded in programme implementation, public value, and technology-enabled systems change."
+        )
+    )
+    featured_badge_label = models.CharField(max_length=80, default="Featured post")
+    featured_fallback_title = models.CharField(
+        max_length=255,
+        default="Practical thinking for systems that serve people well.",
+    )
+    archive_eyebrow = models.CharField(max_length=80, default="Archive")
+    archive_title = models.CharField(
+        max_length=255,
+        default=(
+            "Explore perspectives on governance, institutional effectiveness, social protection, "
+            "and digital execution."
+        ),
+    )
+    archive_intro = models.TextField(
+        default=(
+            "Search by topic, filter the archive, and move from strategic reflections to "
+            "implementation lessons with a more editorial reading experience."
+        )
+    )
+    archive_link_label = models.CharField(max_length=80, default="Full archive")
+    subscribe_badge_label = models.CharField(max_length=80, default="Subscribe")
+    subscribe_title = models.CharField(max_length=255, default="Receive new essays directly.")
+    subscribe_description = models.TextField(
+        default=(
+            "Join the list for practical reflections on programme leadership, policy, "
+            "institutional performance, and digital systems that create measurable value."
+        )
+    )
+    detail_back_label = models.CharField(max_length=80, default="Back to blog")
+    detail_meta_heading = models.CharField(max_length=120, default="Post details")
+    meta_title = models.CharField(max_length=160, blank=True)
+    meta_description = models.TextField(blank=True)
+
+    class Meta:
+        verbose_name = "Blog settings"
+        verbose_name_plural = "Blog settings"
+
+    def __str__(self):
+        return "Blog settings"
 
 
 class CredibilityStat(models.Model):
@@ -304,6 +372,22 @@ class SocialLink(models.Model):
         ordering = ["order", "id"]
         verbose_name = "Social link"
         verbose_name_plural = "Social links"
+
+    def __str__(self):
+        return self.label
+
+
+class NavigationItem(models.Model):
+    label = models.CharField(max_length=80)
+    href = models.CharField(max_length=255)
+    order = models.PositiveIntegerField(default=0)
+    visible = models.BooleanField(default=True)
+    open_in_new_tab = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["order", "id"]
+        verbose_name = "Navigation item"
+        verbose_name_plural = "Navigation items"
 
     def __str__(self):
         return self.label

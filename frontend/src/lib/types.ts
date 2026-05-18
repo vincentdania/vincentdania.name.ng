@@ -15,6 +15,17 @@ export interface SiteSettings {
   linkedin_url: string;
   contact_intro: string;
   footer_note: string;
+  hero_primary_cta_label: string;
+  hero_primary_cta_link: string;
+  hero_secondary_cta_label: string;
+  hero_secondary_cta_link: string;
+  navbar_contact_label: string;
+  navbar_contact_link: string;
+  navbar_cv_label: string;
+  contact_email_button_label: string;
+  contact_whatsapp_button_label: string;
+  contact_cv_button_label: string;
+  footer_copyright: string;
   meta_title: string;
   meta_description: string;
   cv_file_url: string;
@@ -102,6 +113,33 @@ export interface SocialLink {
   visible_in_footer: boolean;
 }
 
+export interface NavigationItem {
+  label: string;
+  href: string;
+  order: number;
+  visible: boolean;
+  open_in_new_tab: boolean;
+}
+
+export interface BlogSettings {
+  index_badge_label: string;
+  index_title: string;
+  index_intro: string;
+  featured_badge_label: string;
+  featured_fallback_title: string;
+  archive_eyebrow: string;
+  archive_title: string;
+  archive_intro: string;
+  archive_link_label: string;
+  subscribe_badge_label: string;
+  subscribe_title: string;
+  subscribe_description: string;
+  detail_back_label: string;
+  detail_meta_heading: string;
+  meta_title: string;
+  meta_description: string;
+}
+
 export interface Project {
   name: string;
   slug: string;
@@ -139,6 +177,8 @@ export interface Article extends ArticlePreview {
 export interface SitePayload {
   site_settings: SiteSettings;
   profile: ProfileContent;
+  blog_settings: BlogSettings;
+  navigation_items: NavigationItem[];
   credibility_stats: CredibilityStat[];
   impact_metrics: ImpactMetric[];
   experiences: Experience[];

@@ -99,17 +99,33 @@ The backend seeds:
 - Vincent's portrait and CV from `backend/seed_assets/`
 - profile, experience, impact metrics, education, certifications, and opportunities
 - five projects/products
-- five articles
+- navigation and blog settings
+- five blog posts
 - footer social links
 
 ## Admin Coverage
 
 The Django admin manages:
 
-- Site settings and profile content
+- Site settings, navigation, blog settings, and profile content
 - Credibility stats and impact metrics
 - Experience, expertise, education, certifications, and opportunities
-- Articles, categories, tags, and projects
-- Subscribers and contact messages
+- Blog posts, categories, tags, and projects
+- Subscribers, subscriber imports, email campaigns, email deliveries, and contact messages
 
-Subscribers can be exported to CSV from the admin action menu.
+Subscribers can be exported to CSV from the admin action menu, imported in bulk from pasted lists or CSV files, and targeted with admin-created email campaigns. Published blog posts can also be converted into draft announcement campaigns directly from the blog post admin.
+
+## Email Setup
+
+Newsletter and campaign sending use Django's configured email backend.
+
+Recommended environment values in production:
+
+- `SITE_URL=https://your-domain.example`
+- `DEFAULT_FROM_EMAIL=Vincent Dania <no-reply@your-domain.example>`
+- `DJANGO_EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend`
+- `EMAIL_HOST=...`
+- `EMAIL_PORT=587`
+- `EMAIL_HOST_USER=...`
+- `EMAIL_HOST_PASSWORD=...`
+- `EMAIL_USE_TLS=true`

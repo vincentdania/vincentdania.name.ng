@@ -12,7 +12,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
-      url: absoluteUrl("/articles"),
+      url: absoluteUrl("/phd"),
+      priority: 0.9,
+    },
+    {
+      url: absoluteUrl("/consult"),
+      priority: 0.95,
+    },
+    {
+      url: absoluteUrl("/blog"),
       priority: 0.9,
     },
   ];
@@ -22,7 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return [
       ...baseEntries,
       ...articles.map((article) => ({
-        url: absoluteUrl(`/articles/${article.slug}`),
+        url: absoluteUrl(`/blog/${article.slug}`),
         lastModified: article.published_at,
         priority: 0.8,
       })),

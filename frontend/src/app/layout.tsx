@@ -3,6 +3,7 @@ import { Fraunces, IBM_Plex_Mono, Manrope } from "next/font/google";
 import { Toaster } from "sonner";
 
 import "./globals.css";
+import { fetchSitePayload } from "@/lib/api";
 import { absoluteUrl } from "@/lib/utils";
 
 const fraunces = Fraunces({
@@ -23,39 +24,46 @@ const ibmPlexMono = IBM_Plex_Mono({
   weight: ["400", "500", "600"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(absoluteUrl()),
-  title: {
-    default: "Vincent Dania | Programme Leadership, IT & Social Protection",
-    template: "%s | Vincent Dania",
-  },
-  description:
-    "Senior programme and project manager, IT professional, digital builder, and thought leader working across donor-funded delivery, governance, and technology.",
-  openGraph: {
-    title: "Vincent Dania | Programme Leadership, IT & Social Protection",
-    description:
-      "Portfolio and articles for Vincent Dania, a senior programme and project leader with strong digital and policy fluency.",
-    url: absoluteUrl(),
-    siteName: "Vincent Dania",
-    images: [
-      {
-        url: absoluteUrl("/og-default.svg"),
-        width: 1200,
-        height: 630,
-        alt: "Vincent Dania",
-      },
-    ],
-    locale: "en_NG",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Vincent Dania | Programme Leadership, IT & Social Protection",
-    description:
-      "Portfolio and articles for Vincent Dania, a senior programme and project leader with strong digital and policy fluency.",
-    images: [absoluteUrl("/og-default.svg")],
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const siteData = await fetchSitePayload().catch(() => null);
+  const settings = siteData?.site_settings;
+  const siteName = settings?.site_name || "Vincent Dania";
+  const title = settings?.meta_title || `${siteName} | Programme Leadership, IT & Social Protection`;
+  const description =
+    settings?.meta_description ||
+    "Senior programme and project manager, IT professional, digital builder, and thought leader working across donor-funded delivery, governance, and technology.";
+
+  return {
+    metadataBase: new URL(absoluteUrl()),
+    title: {
+      default: title,
+      template: `%s | ${siteName}`,
+    },
+    description,
+    openGraph: {
+      title,
+      description,
+      url: absoluteUrl(),
+      siteName,
+      images: [
+        {
+          url: absoluteUrl("/og-default.svg"),
+          width: 1200,
+          height: 630,
+          alt: siteName,
+        },
+      ],
+      locale: "en_NG",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [absoluteUrl("/og-default.svg")],
+    },
+  };
+}
 
 export default function RootLayout({
   children,
