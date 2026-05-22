@@ -638,6 +638,8 @@ class Command(BaseCommand):
         Project.objects.filter(name__in=["Host Communities", "Male Feminists Network"]).delete()
 
     def seed_articles(self):
+        seed_dir = Path(__file__).resolve().parents[3] / "seed_assets"
+        ngo_cover_image = "ngo-sector-in-nigeria.jpg"
         categories = {
             "social-protection": ArticleCategory.objects.update_or_create(
                 slug="social-protection",
@@ -655,6 +657,10 @@ class Command(BaseCommand):
                 slug="governance-gender",
                 defaults={"name": "Governance & Gender", "description": "Governance, accountability, gender justice, and public leadership."},
             )[0],
+            "ngo-sector": ArticleCategory.objects.update_or_create(
+                slug="ngo-sector",
+                defaults={"name": "NGO Sector", "description": "Reflections on civil society, donor funding, accountability, and development practice."},
+            )[0],
         }
         tags = {
             slug: ArticleTag.objects.update_or_create(slug=slug, defaults={"name": name})[0]
@@ -667,10 +673,107 @@ class Command(BaseCommand):
                 ("gbv-prevention", "GBV Prevention"),
                 ("accountability", "Accountability"),
                 ("digital-transformation", "Digital Transformation"),
+                ("donor-funding", "Donor Funding"),
+                ("ngo-reform", "NGO Reform"),
+                ("development-practice", "Development Practice"),
             ]
         }
 
         articles = [
+            {
+                "title": "The NGO Sector in Nigeria Is Broken: An Insider's Reflection, Part 1",
+                "summary": "An insider's introduction to why NGOs matter in Nigeria, why their work often reaches people others ignore, and why the sector still needs serious reform.",
+                "body": """
+<p>I recently took a break from the NGO sector in Nigeria after 13 years of active employment with one of the leading national NGOs.</p>
+<p>I want to take some time to write about my experiences, the lessons I learned, and some observations I believe the donor community needs to pay attention to.</p>
+<p>I rose through the ranks from intern to managing national projects worth billions of naira. I have travelled to virtually every state in Nigeria. I have been to rural communities that politicians do not visit even during campaigns.</p>
+<p>So my perspective comes from direct field experience gathered over several years of interacting with stakeholders on both the demand and supply side of development work.</p>
+<p>For a start, many people do not fully appreciate the important role NGOs play in Nigeria. The NGO sector is the true last hope of the common man, especially now that justice in Nigeria increasingly appears to be for the highest bidder.</p>
+<p>NGO workers are among the very few people who will risk their lives and personal comfort to deliver life-saving interventions to complete strangers who have no economic or political value to them.</p>
+<p>Let me explain this further.</p>
+<p>A politician often does things for people and communities that can translate into votes, even though the resources being used actually came from the people through taxes. A corporate organisation carries out CSR activities in communities where they extract resources or where their operations have an impact. An evangelist makes sacrifices so people can give their lives to Christ and so he can reap eternal rewards in heaven. Even many "men of God" prefer big cities where the "flocks" are financially robust.</p>
+<p>But a true NGO worker will often travel long distances, endure harsh conditions, and work on little more than a survival allowance just to help communities with whom he has no blood, economic, spiritual, or political ties.</p>
+<p>Secondly, NGOs are at the forefront of real development work in Nigeria.</p>
+<p>Many politicians are focused on large infrastructure projects like roads and bridges that can generate huge kickbacks. NGOs, on the other hand, are the ones implementing interventions that ensure children receive nutrition supplements so their cognitive abilities can develop properly. They run programmes against child marriage so young girls can stay in school, build confidence, and develop agency over their lives. They champion social protection so poor and vulnerable people are protected from shocks and can live with some dignity. They push for social justice, empower citizens to reclaim their rights, and advocate for government policies to have a human face.</p>
+<p>No other sector consistently does this kind of work.</p>
+<p>It is not an exaggeration to say that many NGO workers are doing what most people would describe as the real work of God on earth.</p>
+<p>This is why it is important to pay attention to what happens within the sector.</p>
+<p>One reason many Nigerians do not pay attention to NGOs is because most local NGOs are funded by international foundations and development partners, unlike politicians who spend public funds generated from taxes and national resources.</p>
+<p>But in reality, the funds NGOs receive are collected on behalf of the people.</p>
+<p>The painful truth, however, is that the current operating model of the NGO sector in Nigeria is broken in many ways, and it needs serious reform.</p>
+<p>I hope this series of articles draws the attention of NGOs, donors, development partners, and the wider public to some of the issues that deserve urgent reflection.</p>
+<p>Part 2 continues with a closer look at the money.</p>
+                """.strip(),
+                "cover_image_name": ngo_cover_image,
+                "featured": True,
+                "status": Article.STATUS_PUBLISHED,
+                "published_at": aware_datetime(datetime(2026, 5, 22, 18, 0)),
+                "reading_time_minutes": 5,
+                "meta_title": "The NGO Sector in Nigeria Is Broken, Part 1 | Vincent Dania",
+                "meta_description": "An insider's reflection on why NGOs matter in Nigeria and why the sector urgently needs reform.",
+                "categories": [categories["ngo-sector"], categories["institutional-effectiveness"]],
+                "tags": [tags["ngo-reform"], tags["development-practice"], tags["accountability"]],
+            },
+            {
+                "title": "The NGO Sector in Nigeria Is Broken: An Insider's Reflection, Part 2",
+                "summary": "A follow-the-money reflection on donor funding, grant cycles, NGO overhead, and the difficult question of whether development spending is producing proportional transformation.",
+                "body": """
+<h2>Let's Follow the Money</h2>
+<p>In Part 1 of this series, I explained why NGOs remain one of the few institutions still doing genuine development work in Nigeria despite the many challenges within the sector.</p>
+<p>I also stated clearly that the sector itself is broken in many ways and urgently needs reform.</p>
+<p>To understand the depth of the problem, we need to start by following the money.</p>
+<p>Most of the substantial funding NGOs receive in Nigeria comes from foreign foundations and international development partners. These funds usually come through one of three routes.</p>
+<p>First, an organisation sees a public call for proposals and applies competitively for funding.</p>
+<p>Second, a donor organisation notices the work an NGO is doing and approaches them for possible partnership and support.</p>
+<p>Third, and this is the uncomfortable part many people do not openly discuss, relationships and networks also play a major role. Sometimes, someone within or close to a donor organisation helps facilitate access to funding opportunities.</p>
+<p>Before these grants are approved, many donor organisations conduct extensive assessments of the NGO's governance structures, financial systems, procurement processes, safeguarding policies, and accountability mechanisms. Some organisations go through months of due diligence before a grant agreement is signed.</p>
+<p>On paper, the system appears rigorous.</p>
+<p>The money involved is also enormous.</p>
+<p>Between 2007 and 2025, the Gates Foundation awarded more than $1.38 billion USD in grants to 136 organisations operating in Nigeria. At current exchange rates, this is roughly over &#8358;2 trillion.</p>
+<p>Similarly, between 2015 and 2025, the MacArthur Foundation disbursed over $151 million USD to approximately 130 Nigerian organisations.</p>
+<p>In 2024 alone, the Ford Foundation awarded about $15.4 million USD to 55 organisations in Nigeria.</p>
+<p>These figures are not hidden. They are publicly available on the websites and annual reports of the donor organisations themselves.</p>
+<p>To be clear, this level of international support for Nigeria is both significant and commendable.</p>
+<p>These grants support important work in healthcare, education, governance reform, gender equality, social justice, economic empowerment, humanitarian response, climate action, and human rights advocacy.</p>
+<p>But despite the scale of these investments, a difficult question continues to echo quietly among many Nigerians:</p>
+<p><strong>What real value are these grants delivering relative to the amount of money being spent?</strong></p>
+<p>This is not an attack on NGOs or donors. It is a serious question that deserves honest reflection.</p>
+<p>The Project Management Institute broadly defines project success as the extent to which the value delivered is commensurate with the effort and resources invested.</p>
+<p>In simple terms, if billions are being spent year after year, the outcomes should be visible and measurable in the lives of ordinary people.</p>
+<p>The facts on ground often suggest otherwise.</p>
+<p>Many communities remain trapped in extreme poverty despite years of interventions. Some rural communities have hosted development projects for over a decade, yet their realities barely change. Workshops continue. Reports continue. Conferences continue. Funding cycles continue.</p>
+<p>But sometimes it becomes difficult to point clearly to proportional transformation.</p>
+<p>So where is the money really going?</p>
+<p>A simple place to start is by examining the audited financial statements and annual reports published by NGOs themselves.</p>
+<p>Again, everything I will reference in this series comes from information already made public by the organisations involved. This is important because discussions around the NGO sector are often emotional, defensive, or reduced to conspiracy theories.</p>
+<p>I am not interested in conspiracy theories.</p>
+<p>I am interested in systems.</p>
+<p>When you carefully study the financial records of many NGOs, you begin to notice certain patterns.</p>
+<p>A substantial portion of donor funding often goes into administrative structures, salaries, international travel, consultancy fees, workshops, branding, meetings, procurement processes, office maintenance, vehicle costs, and endless layers of project management overhead.</p>
+<p>Now let me be clear before some people intentionally misunderstand this point.</p>
+<p>NGOs need competent staff. Development work is difficult work. Good professionals deserve fair salaries. Organisations need offices, systems, audits, safeguarding structures, monitoring frameworks, logistics, and compliance mechanisms.</p>
+<p>That is not the problem.</p>
+<p>The real problem begins when the system gradually becomes more focused on sustaining itself than solving the actual problems it was created to address.</p>
+<p>At some point, some organisations unconsciously begin to optimise more for grant survival than for transformational impact.</p>
+<p>The goal subtly shifts from "How do we solve this problem?" to "How do we position ourselves for the next funding cycle?"</p>
+<p>And once that happens, an entire ecosystem quietly develops around perpetual intervention rather than permanent solutions.</p>
+<p>Projects become continuous.</p>
+<p>Problems become institutionalised.</p>
+<p>Communities become statistics in proposal documents.</p>
+<p>And donor reports begin to look more successful than the realities on ground.</p>
+<p>This is one of the hardest truths I had to confront after spending over a decade inside the sector.</p>
+<p>Part 3 will explore another uncomfortable issue within the NGO sector in Nigeria: the growing disconnect between donor expectations, NGO narratives, and the actual realities faced by local communities.</p>
+                """.strip(),
+                "cover_image_name": ngo_cover_image,
+                "featured": False,
+                "status": Article.STATUS_PUBLISHED,
+                "published_at": aware_datetime(datetime(2026, 5, 22, 18, 5)),
+                "reading_time_minutes": 8,
+                "meta_title": "The NGO Sector in Nigeria Is Broken, Part 2 | Vincent Dania",
+                "meta_description": "A follow-the-money reflection on donor funding, NGO overhead, and the value delivered by development spending in Nigeria.",
+                "categories": [categories["ngo-sector"], categories["institutional-effectiveness"]],
+                "tags": [tags["donor-funding"], tags["ngo-reform"], tags["development-practice"], tags["accountability"]],
+            },
             {
                 "title": "Social Protection in the Age of Automation: Policy Options for Skills Security in Nigeria",
                 "summary": "A practical policy argument for how countries like Nigeria can protect workers and households as automation reshapes labour demand.",
@@ -816,9 +919,20 @@ class Command(BaseCommand):
         for article_data in articles:
             categories_for_article = article_data.pop("categories")
             tags_for_article = article_data.pop("tags")
+            cover_image_name = article_data.pop("cover_image_name", "")
             article, _ = Article.objects.update_or_create(
                 title=article_data["title"],
                 defaults=article_data,
             )
+            if cover_image_name:
+                cover_path = seed_dir / cover_image_name
+                cover_stem = Path(cover_image_name).stem
+                current_cover_stem = Path(article.cover_image.name).stem if article.cover_image else ""
+                if cover_path.exists() and (
+                    not article.cover_image
+                    or not current_cover_stem.startswith(cover_stem)
+                ):
+                    with cover_path.open("rb") as image_file:
+                        article.cover_image.save(cover_image_name, File(image_file), save=True)
             article.categories.set(categories_for_article)
             article.tags.set(tags_for_article)
