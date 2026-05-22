@@ -3,7 +3,12 @@ import "server-only";
 import { Article, ArticlePreview, SitePayload } from "@/lib/types";
 
 const INTERNAL_API_BASE_URL =
-  process.env.NEXT_INTERNAL_API_BASE_URL || "http://127.0.0.1:8000/api";
+  process.env.NEXT_INTERNAL_API_BASE_URL || "http://backend:8000/api";
+
+const INTERNAL_API_TIMEOUT_MS = Number.parseInt(
+  process.env.NEXT_INTERNAL_API_TIMEOUT_MS || "8000",
+  10,
+);
 
 function buildInternalUrl(path: string) {
   return `${INTERNAL_API_BASE_URL.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
@@ -15,6 +20,7 @@ async function fetchJson<T>(path: string): Promise<T> {
     headers: {
       Accept: "application/json",
     },
+    signal: AbortSignal.timeout(INTERNAL_API_TIMEOUT_MS),
   });
 
   if (!response.ok) {

@@ -11,7 +11,7 @@ database_url = os.getenv("DATABASE_URL", "")
 if database_url.startswith("postgres"):
     for attempt in range(30):
         try:
-            with psycopg.connect(database_url):
+            with psycopg.connect(database_url, connect_timeout=5):
                 break
         except psycopg.OperationalError:
             if attempt == 29:

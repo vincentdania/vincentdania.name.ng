@@ -18,9 +18,15 @@ RUN npm run build
 
 FROM node:22-alpine AS runner
 WORKDIR /app
+ARG NEXT_PUBLIC_SITE_URL=http://localhost
+ARG NEXT_PUBLIC_API_BASE_PATH=/api
+ARG NEXT_INTERNAL_API_BASE_URL=http://backend:8000/api
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
+ENV NEXT_PUBLIC_API_BASE_PATH=$NEXT_PUBLIC_API_BASE_PATH
+ENV NEXT_INTERNAL_API_BASE_URL=$NEXT_INTERNAL_API_BASE_URL
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static

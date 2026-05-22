@@ -25,15 +25,34 @@ SECRET_KEY = os.getenv(
 DEBUG = env_bool("DJANGO_DEBUG", True)
 ALLOWED_HOSTS = env_list(
     "DJANGO_ALLOWED_HOSTS",
-    ["127.0.0.1", "localhost", "backend", "nginx"],
+    [
+        "127.0.0.1",
+        "localhost",
+        "backend",
+        "nginx",
+        "vincentdania.name.ng",
+        "www.vincentdania.name.ng",
+    ],
 )
 CSRF_TRUSTED_ORIGINS = env_list(
     "DJANGO_CSRF_TRUSTED_ORIGINS",
-    ["http://127.0.0.1", "http://localhost"],
+    [
+        "http://127.0.0.1",
+        "http://localhost",
+        "https://vincentdania.name.ng",
+        "https://www.vincentdania.name.ng",
+    ],
 )
 CORS_ALLOWED_ORIGINS = env_list(
     "DJANGO_CORS_ALLOWED_ORIGINS",
-    ["http://127.0.0.1", "http://localhost", "http://127.0.0.1:3000", "http://localhost:3000"],
+    [
+        "http://127.0.0.1",
+        "http://localhost",
+        "http://127.0.0.1:3000",
+        "http://localhost:3000",
+        "https://vincentdania.name.ng",
+        "https://www.vincentdania.name.ng",
+    ],
 )
 SITE_ORIGIN = os.getenv("SITE_URL", "http://localhost")
 

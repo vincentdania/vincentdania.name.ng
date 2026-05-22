@@ -25,7 +25,7 @@ services:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health/"]
+      test: ["CMD", "curl", "-f", "--max-time", "5", "-H", "Host: backend", "http://localhost:8000/api/health/"]
       interval: 15s
       timeout: 5s
       retries: 5
