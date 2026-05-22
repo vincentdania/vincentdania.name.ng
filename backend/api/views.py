@@ -1,4 +1,6 @@
 from django.http import HttpResponse
+from django.db import connections
+from django.db.utils import OperationalError
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -48,7 +50,11 @@ class HealthCheckView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        return Response({"status": "ok"})
+        try:
+            connections["default"].ensure_connection()
+        except OperationalError:
+            return Response({"status": "error", "database": "unavailable"}, status=503)
+        return Response({"status": "ok", "database": "ok"})
 
 
 class PublicSiteView(APIView):
