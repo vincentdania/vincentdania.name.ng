@@ -1,6 +1,11 @@
-__pycache__/
+.venv
+__pycache__
 *.pyc
+*.pyo
+*.sqlite3
 db.sqlite3
-media/
-staticfiles/
-.pytest_cache/
+media
+staticfiles
+.env
+.env.*
+.DS_Store

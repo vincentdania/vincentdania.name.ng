@@ -1,0 +1,10 @@
+.git
+.venv
+tmp
+.env
+.env.*
+.DS_Store
+frontend/node_modules
+frontend/.next
+backend/media
+backend/staticfiles
