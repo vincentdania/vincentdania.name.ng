@@ -5,7 +5,7 @@ import { absoluteUrl } from "@/lib/utils";
 
 import { BlogIndexPageView } from "@/components/blog/blog-index-page";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteData = await fetchSitePayload().catch(() => null);

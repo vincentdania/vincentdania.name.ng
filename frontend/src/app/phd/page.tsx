@@ -1,6 +1,6 @@
 import { generatePhdMetadata, PhdPageView } from "@/components/phd/phd-page";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export const generateMetadata = generatePhdMetadata;
 

@@ -27,7 +27,7 @@ import { absoluteUrl, cn } from "@/lib/utils";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteNavbar } from "@/components/layout/site-navbar";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = await fetchSitePayload().catch(() => null);

@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 import { fetchArticles } from "@/lib/api";
 import { absoluteUrl } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseEntries: MetadataRoute.Sitemap = [

@@ -1,6 +1,6 @@
 import { generateBlogPostMetadata, BlogPostPageView } from "@/components/blog/blog-post-page";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 interface BlogPostRouteProps {
   params: Promise<{ slug: string }>;
