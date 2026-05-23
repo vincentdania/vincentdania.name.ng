@@ -640,6 +640,7 @@ class Command(BaseCommand):
     def seed_articles(self):
         seed_dir = Path(__file__).resolve().parents[3] / "seed_assets"
         ngo_cover_image = "ngo-sector-in-nigeria.jpg"
+        ngo_part_2_cover_image = "ngo-sector-broken-part-2.png"
         categories = {
             "social-protection": ArticleCategory.objects.update_or_create(
                 slug="social-protection",
@@ -725,20 +726,22 @@ class Command(BaseCommand):
 <p>Most of the substantial funding NGOs receive in Nigeria comes from foreign foundations and international development partners. These funds usually come through one of three routes.</p>
 <p>First, an organisation sees a public call for proposals and applies competitively for funding.</p>
 <p>Second, a donor organisation notices the work an NGO is doing and approaches them for possible partnership and support.</p>
-<p>Third, and this is the uncomfortable part many people do not openly discuss, relationships and networks also play a major role. Sometimes, someone within or close to a donor organisation helps facilitate access to funding opportunities.</p>
+<p>Third, relationships and networks also play a major role. Sometimes, someone within or close to a donor organisation helps facilitate access to funding opportunities.</p>
 <p>Before these grants are approved, many donor organisations conduct extensive assessments of the NGO's governance structures, financial systems, procurement processes, safeguarding policies, and accountability mechanisms. Some organisations go through months of due diligence before a grant agreement is signed.</p>
 <p>On paper, the system appears rigorous.</p>
-<p>The money involved is also enormous.</p>
+<p>The scale of money flowing into the NGO sector in Nigeria is also enormous.</p>
 <p>Between 2007 and 2025, the Gates Foundation awarded more than $1.38 billion USD in grants to 136 organisations operating in Nigeria. At current exchange rates, this is roughly over &#8358;2 trillion.</p>
 <p>Similarly, between 2015 and 2025, the MacArthur Foundation disbursed over $151 million USD to approximately 130 Nigerian organisations.</p>
 <p>In 2024 alone, the Ford Foundation awarded about $15.4 million USD to 55 organisations in Nigeria.</p>
-<p>These figures are not hidden. They are publicly available on the websites and annual reports of the donor organisations themselves.</p>
+<p>These figures are not hidden. They are publicly available on the websites and annual reports of the donor organisations and grantees themselves.</p>
 <p>To be clear, this level of international support for Nigeria is both significant and commendable.</p>
 <p>These grants support important work in healthcare, education, governance reform, gender equality, social justice, economic empowerment, humanitarian response, climate action, and human rights advocacy.</p>
 <p>But despite the scale of these investments, a difficult question continues to echo quietly among many Nigerians:</p>
 <p><strong>What real value are these grants delivering relative to the amount of money being spent?</strong></p>
+<p>One of the excuses often given is that NGOs are not service providers. They use what is called a Human Rights-Based Approach, which means they focus on empowering citizens to demand their rights from their duty bearers.</p>
+<p>Whatever approach is adopted, the bottom line is that value should be delivered to the people on whose behalf the grants were collected.</p>
 <p>This is not an attack on NGOs or donors. It is a serious question that deserves honest reflection.</p>
-<p>The Project Management Institute broadly defines project success as the extent to which the value delivered is commensurate with the effort and resources invested.</p>
+<p>The Project Management Institute broadly defines project success as the extent to which stakeholders perceive that a project delivered value that was worth the effort and resources invested.</p>
 <p>In simple terms, if billions are being spent year after year, the outcomes should be visible and measurable in the lives of ordinary people.</p>
 <p>The facts on ground often suggest otherwise.</p>
 <p>Many communities remain trapped in extreme poverty despite years of interventions. Some rural communities have hosted development projects for over a decade, yet their realities barely change. Workshops continue. Reports continue. Conferences continue. Funding cycles continue.</p>
@@ -749,7 +752,7 @@ class Command(BaseCommand):
 <p>I am not interested in conspiracy theories.</p>
 <p>I am interested in systems.</p>
 <p>When you carefully study the financial records of many NGOs, you begin to notice certain patterns.</p>
-<p>A substantial portion of donor funding often goes into administrative structures, salaries, international travel, consultancy fees, workshops, branding, meetings, procurement processes, office maintenance, vehicle costs, and endless layers of project management overhead.</p>
+<p>A substantial portion of donor funding often goes into administrative structures, meetings, travel, consultancy fees, workshops, branding, and endless layers of advocacy and project management overhead.</p>
 <p>Now let me be clear before some people intentionally misunderstand this point.</p>
 <p>NGOs need competent staff. Development work is difficult work. Good professionals deserve fair salaries. Organisations need offices, systems, audits, safeguarding structures, monitoring frameworks, logistics, and compliance mechanisms.</p>
 <p>That is not the problem.</p>
@@ -764,7 +767,7 @@ class Command(BaseCommand):
 <p>This is one of the hardest truths I had to confront after spending over a decade inside the sector.</p>
 <p>Part 3 will explore another uncomfortable issue within the NGO sector in Nigeria: the growing disconnect between donor expectations, NGO narratives, and the actual realities faced by local communities.</p>
                 """.strip(),
-                "cover_image_name": ngo_cover_image,
+                "cover_image_name": ngo_part_2_cover_image,
                 "featured": False,
                 "status": Article.STATUS_PUBLISHED,
                 "published_at": aware_datetime(datetime(2026, 5, 22, 18, 5)),
