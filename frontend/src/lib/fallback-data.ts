@@ -1,8 +1,130 @@
 import type { Article, SitePayload } from "@/lib/types";
 
+const aiStrategyPublishedAt = "2026-06-09T15:30:00+01:00";
 const publishedAt = "2026-05-22T18:00:00+01:00";
 
+const aiStrategyArticleBody = `
+<p>I just finished going through Nigeria's National Artificial Intelligence Strategy, published in September 2025, and I can't help but conclude that it is 81 pages of beautiful language with very little strategy.</p>
+<p>This is painful for two reasons.</p>
+<p>First, AI is a once-in-a-lifetime opportunity. No serious country is treating it casually. No thinking country is paying lip service to it. Nations that understand what is coming are investing in compute infrastructure, talent, research, data systems, regulation, public-sector adoption, and national security capacity.</p>
+<p>Russian President Vladimir Putin captured the stakes clearly on September 1, 2017, when he said, "Whoever becomes the leader in this sphere will become the ruler of the world".</p>
+<p>That statement may sound dramatic, but it is not far from the truth. AI will shape economic power, military power, productivity, jobs, education, governance, and global influence.</p>
+<p>Second, Nigeria has a young and vibrant minister who, judging from his pedigree, should understand what is at stake better than most people.</p>
+<p>So, seeing a document like this being presented as Nigeria's National AI Strategy is quite disappointing.</p>
+<p>To be fair, the document is not empty. It has a broad vision, 3 strategic objectives, 5 pillars, and 34 strategies. It uses the right words: innovation, inclusion, ethics, talent, collaboration, infrastructure, governance, and sustainable development.</p>
+<p>But the problem with the document is not that it lacks words.</p>
+<p>The problem is that it lacks hard choices.</p>
+<p>Here is what the strategy articulates as Nigeria's AI vision:</p>
+<p>"Our vision is to be a global leader in AI, leveraging ethical inclusive innovation, local talent, and strategic collaboration to drive sustainable development."</p>
+<p>I have read this vision more than 10 times, and I still do not understand what it really means.</p>
+<p>What exactly does Nigeria want to become in AI?</p>
+<p>Do we want to be a global leader in AI research? AI talent? AI startups? AI infrastructure? AI for agriculture? AI for healthcare? AI for education? AI for public service delivery? AI for informal markets? AI for African languages?</p>
+<p>A vision that can mean everything often ends up meaning nothing.</p>
+<p>This is where the strategy begins to fall apart. It wants Nigeria to be everywhere, but it does not show where Nigeria will start. It wants Nigeria to be a global leader, but it does not clearly identify the niche in which Nigeria can realistically lead. It wants inclusive AI, but it does not seriously confront the realities of a country where most workers operate in the informal economy.</p>
+<p>The 3 strategic objectives are clear and commendable: economic growth and competitiveness; social development and inclusion; and technological advancement and leadership.</p>
+<p>Nobody can fault these objectives. They sound good. But sounding good is not the same as being strategic.</p>
+<p>The real question is how will Nigeria achieve these objectives?</p>
+<p>That is where the document becomes weak.</p>
+<p>If Nigeria says it wants to build AI infrastructure, where is the money? Where is the compute? Where is the power supply? Who is building it? What capacity will be available to universities, startups, researchers, and government agencies? What is the timeline? What will be delivered in year one, year two, and year three?</p>
+<p>If Nigeria says it wants to develop AI talent, what kind of talent are we talking about? Machine learning researchers? Data engineers? AI safety experts? Product builders? Public-sector AI specialists? Local-language dataset developers? Hardware and cloud infrastructure experts? How many do we need? Who will train them? Who will employ them? How do we stop the best of them from leaving?</p>
+<p>If Nigeria says it wants responsible AI, what happens when an AI system discriminates against a Nigerian citizen? What happens when a bank, hospital, school, recruitment platform, police unit, or government agency uses an automated system that harms people? Who is accountable? Which regulator acts? What remedy does the citizen have?</p>
+<p>If Nigeria says it wants inclusive AI, how does this strategy speak to the real Nigeria? The Nigeria of traders, artisans, transport workers, teachers, clerical workers, young graduates, market women, small business owners, freelancers, and public servants? How does it prepare them for the labour market disruption that AI will bring?</p>
+<p>These are the questions a national AI strategy should answer.</p>
+<p>Unfortunately, this document does not answer them with the seriousness required.</p>
+<p>It talks about infrastructure, but not with the discipline of an infrastructure plan.</p>
+<p>It talks about talent, but not with the urgency of a national talent emergency.</p>
+<p>It talks about ethics, but not with the force of enforceable rights and responsibilities.</p>
+<p>It talks about innovation, but not with the clarity of sectoral priorities.</p>
+<p>It talks about collaboration, but collaboration is not an implementation model.</p>
+<p>It talks about 34 strategies, but when everything is a strategy, nothing is truly strategic.</p>
+<p>This is the real weakness of the NAIS: it mistakes ambition for strategy.</p>
+<p>A strategy should make choices. It should say: this is what we will do first, this is what we will not do now, this is what we can realistically lead in, this is how much it will cost, this is who is responsible, this is when it will happen, and this is how citizens will know whether we are making progress.</p>
+<p>Without that, what we have is not a national strategy. It is a national aspiration.</p>
+<p>And Nigeria has never had a shortage of aspirations.</p>
+<p>Out of curiosity, I went to look at the National AI Policy of another African country: Rwanda.</p>
+<p>Rwanda's AI policy is built around five clear national objectives.</p>
+<p>First, positioning Rwanda as Africa's AI Lab and Responsible AI Champion.</p>
+<p>Second, building 21st century skills and AI literacy.</p>
+<p>Third, creating an open, secure, and trusted data ecosystem as an enabler of the AI revolution.</p>
+<p>Fourth, driving public-sector transformation to fuel AI adoption.</p>
+<p>Fifth, accelerating responsible AI adoption in the private sector.</p>
+<p>Now, one can debate Rwanda's capacity, ambition, politics, or even the realism of some of these objectives. But at least there is a visible attempt to make choices. You can see the direction. You can see the national positioning. You can see where government wants attention to go.</p>
+<p>More importantly, Rwanda is already connecting policy language to implementation.</p>
+<p>As part of the steps towards actualising this direction, Rwanda signed a three-year Memorandum of Understanding with Anthropic, one of the leading AI companies in the world, to bring AI into Rwanda's education, health, and public-sector systems.</p>
+<p>Under that partnership, Anthropic is expected to support Rwanda's Ministry of Health in tackling national health priorities, including the country's plan to eliminate cervical cancer and its ongoing efforts to reduce malaria and maternal mortality. Developer teams across government institutions are to use Claude and Claude Code. Alongside hands-on training, capacity building, and API credits, the partnership is designed to support Rwanda's broader effort to integrate AI into public-sector work.</p>
+<p>There is also an education component. Anthropic is to provide 2,000 Claude Pro licences for educators across Rwanda, AI literacy training for public servants, and support the deployment of a Claude-powered AI learning companion across eight African countries.</p>
+<p>This is not perfect, but it is clearer, more concrete, more doable, and that is the point.</p>
+<p>A serious AI strategy does not have to solve every national problem at once. It does not have to pretend that one document can turn a country into an AI superpower. But it must show focus. It must show sequencing. It must show the first real moves. It must show the bridge between aspiration and execution.</p>
+<p>Rwanda is not saying everything. It is saying something.</p>
+<p>Nigeria's document, by contrast, seems to want to say everything, and that is precisely why it ends up saying too little.</p>
+<p>Honourable Minister, the stakes of missing out on this revolution are too high.</p>
+<p>We cannot have a national AI strategy just for the sake of being counted among countries with a national AI strategy.</p>
+<p>The world is not waiting. Other countries are building AI infrastructure. They are funding research. They are training talent. They are protecting their data. They are developing regulatory capacity. They are embedding AI into public services. They are positioning their companies and citizens for the next phase of global competition.</p>
+<p>Nigeria cannot respond to this moment with another document that looks good on a website and sounds good at a launch event.</p>
+<p>We have seen this movie before.</p>
+<p>Beautiful documents. Elegant speeches. Stakeholder workshops. Launch photographs. Media headlines. Then silence.</p>
+<p>AI is too important for that cycle.</p>
+<p>Nigeria's AI strategy should have started from Nigeria's actual condition.</p>
+<p>We have a young population. That is an advantage.</p>
+<p>We have brilliant young people building despite the system. That is an advantage.</p>
+<p>We have a large informal economy. That is both a challenge and a unique research opportunity.</p>
+<p>We have local languages and low-resource data environments. That is an area where Nigeria can lead if we are serious.</p>
+<p>We have agriculture, healthcare, education, public finance, security, and labour market problems that AI can help address if properly deployed.</p>
+<p>We have a diaspora that can be mobilised.</p>
+<p>We have startups that can build.</p>
+<p>We have universities that can contribute if funded.</p>
+<p>We have public institutions that can become smarter if there is political will.</p>
+<p>That is where the strategy should begin.</p>
+<p>Not with vague global-leader language.</p>
+<p>Not with 34 strategies that spread attention everywhere and accountability nowhere.</p>
+<p>Not with phrases that sound like they were designed to offend nobody and commit nobody.</p>
+<p>Nigeria needs a realistic AI strategy.</p>
+<p>One that says clearly: these are the 5 national AI priorities for the next 3 years.</p>
+<p>One that says: this is the implementation timeline.</p>
+<p>One that says: these are the first public-sector AI use cases.</p>
+<p>One that says: these are the datasets we will build and open.</p>
+<p>One that says: these are the universities and research centres we will fund.</p>
+<p>One that says: these are the safeguards for citizens.</p>
+<p>One that says: this is how we will protect workers from disruption.</p>
+<p>One that says: this is how Nigerians will measure progress.</p>
+<p>Anything short of this is not enough.</p>
+<p>The tragedy is not that Nigeria does not understand the language of AI. The document proves that we do. The tragedy is that we may once again turn a historic opportunity into another policy performance.</p>
+<p>And that is what we must resist.</p>
+<p>AI will not wait for Nigeria to get serious.</p>
+<p>The question is no longer whether Nigeria has an AI strategy. On paper, we now do.</p>
+<p>The real question is whether we have the courage to admit that the document, as it stands, is not enough.</p>
+<p>Because if this is the strategy that is supposed to position Nigeria for the AI age, then we are not yet serious.</p>
+<p>And the cost of that unseriousness will not be paid by the minister, the consultants, or the officials who launch the document.</p>
+<p>It will be paid by young Nigerians, workers, students, businesses, and future generations who will wake up to discover that the world moved on while Nigeria was still writing beautiful strategies.</p>
+<p>Vincent Dania is a PhD researcher on AI and labour market risks in high-informality economies at the Institute of Social Policy and Strategic Studies, Nnamdi Azikiwe University, Awka.</p>
+`.trim();
+
 export const fallbackArticles: Article[] = [
+  {
+    title: "Nigeria's AI Strategy: A Strategy Without Strategy",
+    slug: "nigerias-ai-strategy-a-strategy-without-strategy",
+    summary:
+      "A critical assessment of Nigeria's National Artificial Intelligence Strategy and why ambition without hard choices is not enough for the AI age.",
+    author_name: "Vincent Dania",
+    featured: true,
+    published_at: aiStrategyPublishedAt,
+    reading_time_minutes: 8,
+    cover_image_url: "/blog/ai-strategy-article.png",
+    categories: [
+      { name: "AI Policy", slug: "ai-policy" },
+      { name: "Digital Systems", slug: "digital-systems" },
+    ],
+    tags: [
+      { name: "Artificial Intelligence", slug: "artificial-intelligence" },
+      { name: "AI Policy", slug: "ai-policy" },
+      { name: "Public Policy", slug: "public-policy" },
+      { name: "Nigeria", slug: "nigeria" },
+    ],
+    body: aiStrategyArticleBody,
+    meta_title: "Nigeria's AI Strategy: A Strategy Without Strategy | Vincent Dania",
+    meta_description:
+      "A critical assessment of Nigeria's National Artificial Intelligence Strategy and why ambition without hard choices is not enough.",
+  },
   {
     title: "The NGO Sector in Nigeria Is Broken: An Insider's Reflection, Part 1",
     slug: "the-ngo-sector-in-nigeria-is-broken-an-insiders-reflection-part-1",
